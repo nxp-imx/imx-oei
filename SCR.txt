@@ -1,0 +1,9 @@
+Package:                     imx-oei.git
+Version:
+Outgoing License:            GPL-2.0
+License File:                LICENSE.txt
+Type of Content:             source
+Description and comments:    IMX Optional Executable Image
+Release Location:            https://github.com/nxp-imx/imx-oei
+Origin:                      NXP (GPL-2.0)
+                             Das U-Boot - Universal Bootloader (GPL-2.0) - http://www.denx.de/wiki/U-Boot/WebHome
