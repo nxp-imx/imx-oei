@@ -8,6 +8,6 @@
 #ifdef DEBUG
 int lpuart32_serial_init(void);
 #else
-#define lpuart32_serial_init(void)	0
+#define lpuart32_serial_init(void)
 #endif
 #endif

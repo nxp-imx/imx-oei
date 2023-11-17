@@ -25,8 +25,11 @@ static void ddrphy_delay40(unsigned int drate)
 int ddr_cfg_phy(struct dram_timing_info *dtiming)
 {
 	struct dram_fsp_msg *fsp_msg;
-	unsigned int i, ts, te;
+	unsigned int i;
 	int ret;
+#ifdef DEBUG
+	unsigned int ts, te;
+#endif
 
 	/* initialize PHY configuration */
 	/* config phy common reg */
@@ -34,10 +37,14 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 
 	/* load training firmwrae iMEM */
 	if (!dtiming->skip_fw) {
+#ifdef DEBUG
 		ts = timer_get_us();
+#endif
 		ddr_load_train_firmware(NULL, IMEM);
+#ifdef DEBUG
 		te = timer_get_us() - ts;
 		printf("** DDR OEI: IMEM load in %u us **\n", te);
+#endif
 	}
 
 	/* load the frequency setpoint message block config */
@@ -66,10 +73,14 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 			ddrphy_init_set_dfi_clk(fsp_msg->drate);
 
 			/* load the dram training firmware image */
+#ifdef DEBUG
 			ts = timer_get_us();
+#endif
 			ddr_load_train_firmware(fsp_msg, DMEM);
+#ifdef DEBUG
 			te = timer_get_us() - ts;
 			printf("** DDR OEI: DMEM load in %u us **\n", te);
+#endif
 
 			/*
 			 * -------------------- excute the firmware --------------------
@@ -81,7 +92,9 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 			 * 4. read the message block result.
 			 * -------------------------------------------------------------
 			 */
+#ifdef DEBUG
 			ts = timer_get_us();
+#endif
 			dwc_ddrphy_apb_wr(0xd0000, 0x1); /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
 			dwc_ddrphy_apb_wr(0xd0099, 0x9);
 			dwc_ddrphy_apb_wr(0xd0099, 0x1);
@@ -96,8 +109,10 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 			dwc_ddrphy_apb_wr(0xd0099, 0x1);
 			ddrphy_delay40(fsp_msg->drate);
 			dwc_ddrphy_apb_wr(0xd0000, 0x0); /* CSR bus: MCU--,PIE/DMA/TDR/APB++ */
+#ifdef DEBUG
 			te = timer_get_us() - ts;
 			printf("** DDR OEI: TRAINING complete in %u us **\n", te);
+#endif
 
 			/* Read the Message Block results */
 			ddrphy_init_read_msg_block();
