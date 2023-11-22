@@ -9,8 +9,13 @@
 #include "debug.h"
 #include "iopoll.h"
 
+#if (DEBUG_UART_INSTANCE == 1)
 #define UART_BASE			LPUART1_RBASE
 #define UART_CLOCK			LPUART1_CLK_ROOT
+#elif (DEBUG_UART_INSTANCE == 2)
+#define UART_BASE			LPUART2_RBASE
+#define UART_CLOCK			LPUART2_CLK_ROOT
+#endif
 
 #define LPUART_BAUD_BOTHEDGE_MASK	(0x20000)
 #define LPUART_BAUD_OSR_MASK		(0x1F000000)

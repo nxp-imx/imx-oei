@@ -33,8 +33,13 @@ static const struct pinmux_cfg {
 	u32 confVal;
 } lpuart_pinmux_cfg[] = {
 #ifdef DEBUG
+#if (DEBUG_UART_INSTANCE == 1)
 	{ IOR(0x1D0), 0, IOR(0), 0, 0, IOR(0x3D4), IOMUXC_PAD_PD(1) },
 	{ IOR(0x1D4), 0, IOR(0), 0, 0, IOR(0x3D8), IOMUXC_PAD_DSE(0xf) },
+#elif (DEBUG_UART_INSTANCE == 2)
+	{ IOR(0x1D8), 0, IOR(0), 0, 0, IOR(0x3DC), IOMUXC_PAD_PD(1) },
+	{ IOR(0x1DC), 0, IOR(0), 0, 0, IOR(0x3E0), IOMUXC_PAD_DSE(0xf) },
+#endif
 #endif
 	{ 0, 0, 0, 0, 0, 0, 0 },
 };
