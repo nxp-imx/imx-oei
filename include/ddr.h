@@ -169,11 +169,16 @@ void ddrphy_cfg_set(struct ddrphy_cfg_param *cfg, unsigned int num);
 #define DDRPHY_QB_CSR_SIZE	5168
 #define DDRPHY_QB_ACSM_SIZE	4 * 1024
 #define DDRPHY_QB_MSB_SIZE	0x200
+
 /**
- * No PSTATE SRAM is saved, one Pstate defined.
+ * No PSTATE SRAM is saved by default, one Pstate defined.
  * PSTATE SRAM to be saved if 3 and more Pstates are defined.
  */
+#if (defined(DDRPHY_PSTATES) && DDRPHY_PSTATES >= 3)
+#define DDRPHY_QB_PSTATES	DDRPHY_PSTATES
+#else
 #define DDRPHY_QB_PSTATES	0
+#endif
 #define DDRPHY_QB_PST_SIZE	DDRPHY_QB_PSTATES * 4 * 1024
 
 #define ACSM_SRAM_BASE_ADDR	0x41000
