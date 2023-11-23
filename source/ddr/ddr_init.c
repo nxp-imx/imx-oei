@@ -61,12 +61,25 @@ int ddrc_config(struct dram_timing_info *dtiming, uint32 fsp_id)
 	if (dtiming->fsp_cfg == NULL || fsp_id >= dtiming->fsp_cfg_num)
 		return -EINVAL;
 
-	/* FSP specific DDRC config */
-	ddrc_cfg = dtiming->fsp_cfg[fsp_id].ddrc_cfg;
-	num      = dtiming->fsp_cfg[fsp_id].ddrc_cfg_num;
+	/**
+	 * FSP specific DDRC config
+	 *
+	 * Pstate DDRC specific configuration
+	 * index must be correlated with the index of
+	 * the corresponding drate in fsp_table.
+	 */
+	for (i = 0; i < dtiming->fsp_msg_num; i++) {
+		if (dtiming->fsp_table[i] == dtiming->fsp_msg[fsp_id].drate)
+			break;
+	}
 
-	for (i = 0; i < num; i++, ddrc_cfg++)
-		writel(ddrc_cfg->val, ddrc_cfg->reg);
+	if (i < dtiming->fsp_cfg_num) {
+		ddrc_cfg = dtiming->fsp_cfg[i].ddrc_cfg;
+		num      = dtiming->fsp_cfg[i].ddrc_cfg_num;
+
+		for (i = 0; i < num; i++, ddrc_cfg++)
+			writel(ddrc_cfg->val, ddrc_cfg->reg);
+	}
 
 	return 0;
 }
@@ -117,22 +130,28 @@ static void ddrphy_coldreset(void)
 
 int ddr_init(struct dram_timing_info *dtiming)
 {
-	unsigned int initial_drate;
 	int ret;
-	u32 val, i;
+	u32 val, i, fsp_id, drate;
 	struct ddrc_cfg_param *ddrc_cfg;
 	unsigned int ddrc_cfg_num;
 
 	/* reset ddrphy */
 	ddrphy_coldreset();
 
-	initial_drate = dtiming->fsp_msg[0].drate;
-	/* default to the frequency point 0 clock */
-	ddrphy_init_set_dfi_clk(initial_drate);
+	/**
+	 * FSP ID must point to the last trained FSP
+	 * so that the proper DDRC config - for the
+	 * last trained FSP - is loaded. This fits
+	 * both training and quick boot flows.
+	 */
+	fsp_id = dtiming->fsp_msg_num - 1;
+	drate = dtiming->fsp_msg[fsp_id].drate;
+	/* default to the last frequency point clock */
+	ddrphy_init_set_dfi_clk(drate);
 
 #if defined(CONFIG_DDR_QBOOT)
 	/* Configure PHY in QuickBoot mode */
-	ret = ddr_cfg_phy_qb(dtiming, 0);
+	ret = ddr_cfg_phy_qb(dtiming, fsp_id);
 	if (ret)
 		return ret;
 #else
@@ -147,7 +166,7 @@ int ddr_init(struct dram_timing_info *dtiming)
 	ddrphy_qb_save();
 #endif
 	/* program the ddrc registers */
-	ddrc_config(dtiming, 0);
+	ddrc_config(dtiming, fsp_id);
 
 	check_dfi_init_complete();
 
