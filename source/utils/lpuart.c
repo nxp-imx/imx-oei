@@ -199,15 +199,15 @@ int lpuart32_serial_init(void)
 	/* Set RX water to 0, to be triggered by any receive data */
 	writel((tx_fifo_size << WATER_TXWATER_OFF), &base->water);
 
-	/* Enable TX and RX FIFO */
-	val |= (FIFO_TXFE | FIFO_RXFE | FIFO_TXFLUSH | FIFO_RXFLUSH);
+	/* Enable TX */
+	val |= (FIFO_TXFE | FIFO_TXFLUSH | FIFO_RXFLUSH);
 	writel(val, &base->fifo);
 
 	writel(0, &base->match);
 
 	lpuart32_serial_setbrg_7ulp(BAUD_RATE);
 
-	writel(CTRL_RE | CTRL_TE,  &base->ctrl);
+	writel(CTRL_TE,  &base->ctrl);
 
 	return 0;
 }
