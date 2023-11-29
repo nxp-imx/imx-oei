@@ -132,6 +132,7 @@ typedef struct {
 #define OCRAM_SOURCE_DATA_SIZE (128 * 1024) /* edma copy ocram's data(data is 0) to tcm */
 
 #define SRC_M7MIX_SLICE_SW_CTRL (0x44464820UL)
+#define SRC_M7MIX_SLICE_FUNC_STAT (0x444648b4UL)
 
 static void debug(const char *fmt_s, ...)
 {
@@ -354,8 +355,10 @@ static int check_dma(uint32_t dma_base_addr)
 void power_up_m7mix(void)
 {
 	/* Do we need power up m7 mix? actually cm33 bootrom/ca55 bootrom will power up m7 mix when contaimer image include m7 firmware */
-	if (*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL != 0)
-		*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL = 0U; 
+	if (*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL != 0) {
+		*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL = 0U;
+		while (*(volatile unsigned int *)SRC_M7MIX_SLICE_FUNC_STAT & 0x10);
+	}
 }
 
 static int tcm_init_by_dma(void)
