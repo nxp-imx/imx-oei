@@ -181,29 +181,30 @@ void ddrphy_cfg_set(struct ddrphy_cfg_param *cfg, unsigned int num);
 
 #define QB_STATE_MEM		0x4aaf4000
 typedef struct {
-	volatile u8 TrainedVREFCA_A0;
-	volatile u8 TrainedVREFCA_A1;
-	volatile u8 TrainedVREFCA_B0;
-	volatile u8 TrainedVREFCA_B1;
-	volatile u8 TrainedVREFDQ_A0;
-	volatile u8 TrainedVREFDQ_A1;
-	volatile u8 TrainedVREFDQ_B0;
-	volatile u8 TrainedVREFDQ_B1;
-	volatile u8 TrainedVREFDQU_A0;
-	volatile u8 TrainedVREFDQU_A1;
-	volatile u8 TrainedVREFDQU_B0;
-	volatile u8 TrainedVREFDQU_B1;
-	volatile u8 TrainedDRAMDFE_A0;
-	volatile u8 TrainedDRAMDFE_A1;
-	volatile u8 TrainedDRAMDFE_B0;
-	volatile u8 TrainedDRAMDFE_B1;
-	volatile u8 TrainedDRAMDCA_A0;
-	volatile u8 TrainedDRAMDCA_A1;
-	volatile u8 TrainedDRAMDCA_B0;
-	volatile u8 TrainedDRAMDCA_B1;
-	volatile u16 csr[DDRPHY_QB_CSR_SIZE];
-	volatile u16 acsm[DDRPHY_QB_ACSM_SIZE];
-	volatile u16 pst[DDRPHY_QB_PST_SIZE];
+	u32 crc;
+	u8 TrainedVREFCA_A0;
+	u8 TrainedVREFCA_A1;
+	u8 TrainedVREFCA_B0;
+	u8 TrainedVREFCA_B1;
+	u8 TrainedVREFDQ_A0;
+	u8 TrainedVREFDQ_A1;
+	u8 TrainedVREFDQ_B0;
+	u8 TrainedVREFDQ_B1;
+	u8 TrainedVREFDQU_A0;
+	u8 TrainedVREFDQU_A1;
+	u8 TrainedVREFDQU_B0;
+	u8 TrainedVREFDQU_B1;
+	u8 TrainedDRAMDFE_A0;
+	u8 TrainedDRAMDFE_A1;
+	u8 TrainedDRAMDFE_B0;
+	u8 TrainedDRAMDFE_B1;
+	u8 TrainedDRAMDCA_A0;
+	u8 TrainedDRAMDCA_A1;
+	u8 TrainedDRAMDCA_B0;
+	u8 TrainedDRAMDCA_B1;
+	u16 csr[DDRPHY_QB_CSR_SIZE];
+	u16 acsm[DDRPHY_QB_ACSM_SIZE];
+	u16 pst[DDRPHY_QB_PST_SIZE];
 } ddrphy_qb_state;
 
 #if defined(CONFIG_DDR_QBOOT)

@@ -2,6 +2,7 @@
 /*
  * Copyright 2023 NXP
  */
+#include "crc.h"
 #include "ddr/qb_p230_rldb4.h"
 #include "time.h"
 
@@ -27,7 +28,7 @@ static u8 ddrphy_read_mb_u8(u32 offset)
 
 void ddrphy_qb_save(void)
 {
-	u32 i, addr, mux, ucc;
+	u32 i, addr, mux, ucc, size;
 	ddrphy_qb_state *qb_state = (ddrphy_qb_state *) QB_STATE_MEM;
 
 	/* enable the ddrphy apb */
@@ -93,6 +94,9 @@ void ddrphy_qb_save(void)
 	 */
 	for (i = 0, addr = PSTATE_SRAM_BASE_ADDR; i < DDRPHY_QB_PST_SIZE; i++, addr++)
 		qb_state->pst[i] = dwc_ddrphy_apb_rd(addr);
+
+	size = sizeof(ddrphy_qb_state) - sizeof(u32);
+	qb_state->crc = crc32(&qb_state->TrainedVREFCA_A0, size);
 
 	/* restore mux */
 	dwc_ddrphy_apb_wr(0xc0080, ucc);

@@ -4,6 +4,7 @@
  */
 
 #include <errno.h>
+#include "crc.h"
 #include "ddr.h"
 #include "debug.h"
 #include "time.h"
@@ -104,13 +105,19 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	u32 qb_state_addr;
 	unsigned int i;
 	int ret;
-	u32 to_addr;
+	u32 to_addr, size, crc;
 	u16 *mb;
 
 	mb = (u16 *) QB_STATE_MEM;
 	fsp_msg = &dtiming->fsp_msg[fsp_id];
 	qb_state_addr = ddr_get_qb_state_addr();
 	qb_state = (ddrphy_qb_state *)(qb_state_addr);
+
+	size = sizeof(ddrphy_qb_state) - sizeof(u32);
+	crc = crc32(&qb_state->TrainedVREFCA_A0, size);
+
+	if (crc != qb_state->crc)
+		return -1;
 
 	/** 3.2.2 MemReset Toggle */
 	ddrphy_delay40(fsp_msg->drate);
