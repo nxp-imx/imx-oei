@@ -5,7 +5,8 @@ OBJS += \
 	$(OUT)/main.o \
 	$(OUT)/ddr_init.o \
 	$(OUT)/ddrphy_utils.o \
-	$(OUT)/helper.o
+	$(OUT)/helper.o \
+	$(OUT)/crc.o
 
 QB = $(shell echo $(QBOOT) | tr A-Z a-z)
 ifeq (${QB}, yes)
