@@ -184,7 +184,7 @@ void ddrphy_cfg_set(struct ddrphy_cfg_param *cfg, unsigned int num);
 #define ACSM_SRAM_BASE_ADDR	0x41000
 #define PSTATE_SRAM_BASE_ADDR	0xA0000
 
-#define QB_STATE_MEM		0x4aa00000
+#define QB_STATE_MEM		0x4aaf4000
 typedef struct {
 	volatile u8 TrainedVREFCA_A0;
 	volatile u8 TrainedVREFCA_A1;
