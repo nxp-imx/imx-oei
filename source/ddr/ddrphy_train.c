@@ -36,16 +36,14 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 	ddrphy_cfg_set(dtiming->ddrphy_cfg, dtiming->ddrphy_cfg_num);
 
 	/* load training firmwrae iMEM */
-	if (!dtiming->skip_fw) {
 #ifdef DEBUG
-		ts = timer_get_us();
+	ts = timer_get_us();
 #endif
-		ddr_load_train_firmware(NULL, IMEM);
+	ddr_load_train_firmware(NULL, IMEM);
 #ifdef DEBUG
-		te = timer_get_us() - ts;
-		printf("** DDR OEI: IMEM load in %u us **\n", te);
+	te = timer_get_us() - ts;
+	printf("** DDR OEI: IMEM load in %u us **\n", te);
 #endif
-	}
 
 	/* load the frequency setpoint message block config */
 	fsp_msg = dtiming->fsp_msg;
@@ -56,67 +54,54 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 
 		/* If NumPStates more than 2, stopPsloop "DMA reload" prepare
 		 * action is included in end of fsp_phy_cfg  */
-		if (dtiming->prog_csr) {
-			/* prog_csr for one time */
-			if (i == 0)
-				ddrphy_cfg_set(dtiming->ddrphy_prog_csr,
-					       dtiming->ddrphy_prog_csr_num);
-			/* prog_csr ps */
-			ddrphy_cfg_set(fsp_msg->fsp_phy_prog_csr_ps_cfg,
-				       fsp_msg->fsp_phy_prog_csr_ps_cfg_num);
-			/* If NumPStates more than 2, stopPsloop "DMA reload" prepare
-			 * action is included in end of fsp_phy_prog_csr_ps_cfg  */
-		}
 
-		if (!dtiming->skip_fw) {
-			/* set dram PHY input clocks to desired frequency */
-			ddrphy_init_set_dfi_clk(fsp_msg->drate);
+		/* set dram PHY input clocks to desired frequency */
+		ddrphy_init_set_dfi_clk(fsp_msg->drate);
 
-			/* load the dram training firmware image */
+		/* load the dram training firmware image */
 #ifdef DEBUG
-			ts = timer_get_us();
+		ts = timer_get_us();
 #endif
-			ddr_load_train_firmware(fsp_msg, DMEM);
+		ddr_load_train_firmware(fsp_msg, DMEM);
 #ifdef DEBUG
-			te = timer_get_us() - ts;
-			printf("** DDR OEI: DMEM load in %u us **\n", te);
+		te = timer_get_us() - ts;
+		printf("** DDR OEI: DMEM load in %u us **\n", te);
 #endif
 
-			/*
-			 * -------------------- excute the firmware --------------------
-			 * Running the firmware is a simply process to taking the
-			 * PMU out of reset and stall, then the firwmare will be run
-			 * 1. reset the PMU;
-			 * 2. begin the excution;
-			 * 3. wait for the training done;
-			 * 4. read the message block result.
-			 * -------------------------------------------------------------
-			 */
+		/*
+		 * -------------------- excute the firmware --------------------
+		 * Running the firmware is a simply process to taking the
+		 * PMU out of reset and stall, then the firwmare will be run
+		 * 1. reset the PMU;
+		 * 2. begin the excution;
+		 * 3. wait for the training done;
+		 * 4. read the message block result.
+		 * -------------------------------------------------------------
+		 */
 #ifdef DEBUG
-			ts = timer_get_us();
+		ts = timer_get_us();
 #endif
-			dwc_ddrphy_apb_wr(0xd0000, 0x1); /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
-			dwc_ddrphy_apb_wr(0xd0099, 0x9);
-			dwc_ddrphy_apb_wr(0xd0099, 0x1);
-			dwc_ddrphy_apb_wr(0xd0099, 0x0);
+		dwc_ddrphy_apb_wr(0xd0000, 0x1); /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
+		dwc_ddrphy_apb_wr(0xd0099, 0x9);
+		dwc_ddrphy_apb_wr(0xd0099, 0x1);
+		dwc_ddrphy_apb_wr(0xd0099, 0x0);
 
-			/* Wait for the training firmware to complete */
-			ret = wait_ddrphy_training_complete();
-			if (ret)
-				return ret;
+		/* Wait for the training firmware to complete */
+		ret = wait_ddrphy_training_complete();
+		if (ret)
+			return ret;
 
-			/* Halt the microcontroller. */
-			dwc_ddrphy_apb_wr(0xd0099, 0x1);
-			ddrphy_delay40(fsp_msg->drate);
-			dwc_ddrphy_apb_wr(0xd0000, 0x0); /* CSR bus: MCU--,PIE/DMA/TDR/APB++ */
+		/* Halt the microcontroller. */
+		dwc_ddrphy_apb_wr(0xd0099, 0x1);
+		ddrphy_delay40(fsp_msg->drate);
+		dwc_ddrphy_apb_wr(0xd0000, 0x0); /* CSR bus: MCU--,PIE/DMA/TDR/APB++ */
 #ifdef DEBUG
-			te = timer_get_us() - ts;
-			printf("** DDR OEI: TRAINING complete in %u us **\n", te);
+		te = timer_get_us() - ts;
+		printf("** DDR OEI: TRAINING complete in %u us **\n", te);
 #endif
 
-			/* Read the Message Block results */
-			ddrphy_init_read_msg_block();
-		}
+		/* Read the Message Block results */
+		ddrphy_init_read_msg_block();
 
 		/* If NumPStates more than 2, resumePsloop "DMA reload" prepare resume, no action */
 		/* config PIE pstate reg */

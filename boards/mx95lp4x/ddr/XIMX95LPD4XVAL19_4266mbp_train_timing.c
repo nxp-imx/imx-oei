@@ -6244,8 +6244,6 @@ struct dram_timing_info dram_timing = {
 	.ddrphy_pie = ddr_phy_pie,
 	.ddrphy_pie_num = ARRAY_SIZE(ddr_phy_pie),
 	.fsp_table = { 4266, },
-	.skip_fw  = 0, 
-	.prog_csr = 0, 
 	.fsp_cfg = ddr_dram_fsp_cfg,
 	.fsp_cfg_num = ARRAY_SIZE(ddr_dram_fsp_cfg),
 }; 

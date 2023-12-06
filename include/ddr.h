@@ -134,12 +134,6 @@ struct dram_timing_info {
 	unsigned int ddrphy_pie_num;
 	/* initialized drate table */
 	unsigned int fsp_table[4];
-
-	/* for simulation */
-	unsigned int skip_fw;
-	unsigned int prog_csr;
-	struct ddrphy_cfg_param *ddrphy_prog_csr;
-	unsigned int ddrphy_prog_csr_num;
 };
 
 extern struct dram_timing_info dram_timing;
