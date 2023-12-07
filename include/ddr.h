@@ -40,6 +40,7 @@
 #define REG_DDR_SDRAM_MD_CNTL_2 (DDR_CTL_BASE + 0x270)
 #define REG_DDR_SDRAM_MPR4      (DDR_CTL_BASE + 0x28C)
 #define REG_DDR_SDRAM_MPR5      (DDR_CTL_BASE + 0x290)
+#define REG_DDR_MTCR            (DDR_CTL_BASE + 0xd00)
 
 #define REG_DDR_ERR_EN        	(DDR_CTL_BASE + 0x1000)
 

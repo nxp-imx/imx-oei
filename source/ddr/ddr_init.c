@@ -131,9 +131,7 @@ static void ddrphy_coldreset(void)
 int ddr_init(struct dram_timing_info *dtiming)
 {
 	int ret;
-	u32 val, i, fsp_id, drate;
-	struct ddrc_cfg_param *ddrc_cfg;
-	unsigned int ddrc_cfg_num;
+	u32 fsp_id, drate;
 
 	/* reset ddrphy */
 	ddrphy_coldreset();
@@ -174,16 +172,7 @@ int ddr_init(struct dram_timing_info *dtiming)
 
 	check_ddrc_idle();
 
-	/* if DRAM Data INIT set, wait it be completed */
-	ddrc_cfg = dtiming->ddrc_cfg;
-	ddrc_cfg_num = dtiming->ddrc_cfg_num;
-	for (i = 0; i < ddrc_cfg_num; i++, ddrc_cfg++) {
-		if (ddrc_cfg->reg != REG_DDR_SDRAM_CFG2)
-			continue;
-		if (ddrc_cfg->val & 0x10)
-			readl_poll_timeout(REG_DDR_SDRAM_CFG2, val, !(val & 0x10), 0);
-		break;
-	}
+	while (readl(REG_DDR_MTCR) & 0x80000000);
 
 	return 0;
 }
