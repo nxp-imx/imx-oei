@@ -75,6 +75,15 @@ void ddrphy_qb_save(void)
 	qb_state->TrainedDRAMDCA_B0 = ddrphy_read_mb_u8(0xdc);
 	qb_state->TrainedDRAMDCA_B1 = ddrphy_read_mb_u8(0xe1);
 #endif
+
+	qb_state->QBPllUPllProg0 = dwc_ddrphy_apb_rd(0x58098);
+	qb_state->QBPllUPllProg1 = dwc_ddrphy_apb_rd(0x58099);
+	qb_state->QBPllUPllProg2 = dwc_ddrphy_apb_rd(0x5809a);
+	qb_state->QBPllUPllProg3 = dwc_ddrphy_apb_rd(0x5809b);
+	qb_state->QBPllCtrl1 = dwc_ddrphy_apb_rd(0x5809c);
+	qb_state->QBPllCtrl4 = dwc_ddrphy_apb_rd(0x5809d);
+	qb_state->QBPllCtrl5 = dwc_ddrphy_apb_rd(0x5809e);
+
 	/* Save CSRs */
 	for (i = 0; i < DDRPHY_QB_CSR_SIZE; i++)
 		qb_state->csr[i] = dwc_ddrphy_apb_rd(ddrphy_csr_cfg[i]);

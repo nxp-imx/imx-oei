@@ -36,7 +36,15 @@ typedef struct _MSB_DDR4X_t {
    uint8_t  TrainedVREFCA_B1;   /** 0x7f */
    uint8_t  TrainedVREFDQ_B0;   /** 0x80 */
    uint8_t  TrainedVREFDQ_B1;   /** 0x81 */
-   uint8_t  Reserved_12[0x37e]; /** 0x82 */
+   uint8_t  Reserved_12[0xae];  /** 0x82 */
+   uint16_t QBPllUPllProg0;     /** 0x130 */
+   uint16_t QBPllUPllProg1;     /** 0x132 */
+   uint16_t QBPllUPllProg2;     /** 0x134 */
+   uint16_t QBPllUPllProg3;     /** 0x136 */
+   uint16_t QBPllCtrl1;         /** 0x138 */
+   uint16_t QBPllCtrl4;         /** 0x13a */
+   uint16_t QBPllCtrl5;         /** 0x13c */
+   uint8_t  Reserved_13[0x2c2]; /** 0x13e..0x3ff */
 } __attribute__ ((packed)) MSB_DDR4X_t;
 
 #endif

@@ -60,7 +60,15 @@ typedef struct _MSB_DDR5_t {
    uint8_t  TrainedVREFDQU_B1;  /** 0xdf */
    uint8_t  TrainedDRAMDFE_B1;  /** 0xe0 */
    uint8_t  TrainedDRAMDCA_B1;  /** 0xe1 */
-   uint8_t  Reserved_12[0x31e]; /** 0xe2 */
+   uint8_t  Reserved_12[0x4e];  /** 0xe2 */
+   uint16_t QBPllUPllProg0;     /** 0x130 */
+   uint16_t QBPllUPllProg1;     /** 0x132 */
+   uint16_t QBPllUPllProg2;     /** 0x134 */
+   uint16_t QBPllUPllProg3;     /** 0x136 */
+   uint16_t QBPllCtrl1;         /** 0x138 */
+   uint16_t QBPllCtrl4;         /** 0x13a */
+   uint16_t QBPllCtrl5;         /** 0x13c */
+   uint8_t  Reserved_13[0x2c2]; /** 0x13e..0x3ff */
 } __attribute__ ((packed)) MSB_DDR5_t;
 
 #endif

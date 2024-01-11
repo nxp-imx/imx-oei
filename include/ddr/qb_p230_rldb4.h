@@ -6,6 +6,12 @@
 #define QB_P230_RLDB4_H
 #include "ddr.h"
 
+/**
+ * Quick boot CSR list according
+ *
+ * to:   PUB230_REG_LIST_DBYTE4.txt
+ * from: Synopsys quick boot FW 2023.11
+ */
 static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x100a3,
 	0x10056,
@@ -102,10 +108,6 @@ static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x20071,
 	0x20084,
 	0x20085,
-	0x20088,
-	0x20089,
-	0x2008a,
-	0x2008c,
 	0x200a5,
 	0x200c6,
 	0x20184,
@@ -176,7 +178,6 @@ static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x2002e,
 	0x2002f,
 	0x2004e,
-	0x2004c,
 	0x2004d,
 	0x20035,
 	0x20036,
@@ -191,8 +192,6 @@ static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x2003f,
 	0x20040,
 	0x2000c,
-	0x2004a,
-	0x2004b,
 	0x20330,
 	0x30038,
 	0x30039,
@@ -543,7 +542,6 @@ static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x12002e,
 	0x12002f,
 	0x12004e,
-	0x12004c,
 	0x12004d,
 	0x120035,
 	0x120036,
@@ -558,8 +556,6 @@ static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x12003f,
 	0x120040,
 	0x12000c,
-	0x12004a,
-	0x12004b,
 	0x120330,
 	0x130038,
 	0x130039,
@@ -1683,6 +1679,16 @@ static const u32 ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
 	0x113029,
 	0x113016,
 	0x113021,
+	0x20088,
+	0x20089,
+	0x2008a,
+	0x2008c,
+	0x2004c,
+	0x2004a,
+	0x2004b,
+	0x12004c,
+	0x12004a,
+	0x12004b,
 	0x30000,
 	0x30003,
 	0x30004,

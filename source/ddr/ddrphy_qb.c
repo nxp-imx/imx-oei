@@ -64,6 +64,14 @@ static int ddrphy_qb_restore(u16 *mb, struct dram_fsp_msg *fsp_msg, ddrphy_qb_st
 	msb->SequenceCtrl = 0x01; /* SequenceCtrl = 0x1 (DevInit Only)*/
 	msb->Quickboot    = 0x01; /* Quickboot    = 0x1 */
 
+	msb->QBPllUPllProg0 = qb_state->QBPllUPllProg0;
+	msb->QBPllUPllProg1 = qb_state->QBPllUPllProg1;
+	msb->QBPllUPllProg2 = qb_state->QBPllUPllProg2;
+	msb->QBPllUPllProg3 = qb_state->QBPllUPllProg3;
+	msb->QBPllCtrl1 = qb_state->QBPllCtrl1;
+	msb->QBPllCtrl4 = qb_state->QBPllCtrl4;
+	msb->QBPllCtrl5 = qb_state->QBPllCtrl5;
+
 #if (defined(DDR4x) || defined(DDR5))
 	msb->MR12_A0 = qb_state->TrainedVREFCA_A0;
 	msb->MR12_A1 = qb_state->TrainedVREFCA_A1;
