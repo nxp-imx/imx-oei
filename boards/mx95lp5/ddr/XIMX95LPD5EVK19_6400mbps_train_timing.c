@@ -31,13 +31,15 @@ static struct ddrc_cfg_param ddr_ddrc_cfg[] = {
 	/* DDR_SDRAM_CFG_5 */ 
 	{ 0x5e080268, 0x00000000 },
 	/* DDR_SDRAM_CFG_6 */ 
-	{ 0x5e08026c, 0x00000004 },
+	{ 0x5e08026c, 0x00001004 },
 	/* DEBUG_2 */ 
 	{ 0x5e080f04, 0x00000800 },
 	/* TX_CFG_1 */ 
-	{ 0x5e080800, 0x43b30002 },
+	{ 0x5e080800, 0x43b31002 },
 	/* TX_CFG_2 */ 
-	{ 0x5e080804, 0x1f1f1f1f },
+	{ 0x5e080804, 0x3f1f1f1f },
+	/* DDR_EOR */
+	{ 0x5e080c00, 0x40000000 },
 	/* ERR_EN */ 
 	{ 0x5e081000, 0x00000000 },
 	/* CS0_CONFIG */ 
@@ -64,9 +66,9 @@ static struct ddrc_cfg_param ddr_dram_fsp_ddrc_cfg[] = {
 		/* DDR_ZQ_CNTL */ 
 		{ 0x5e080170, 0x8c0c0509 },
 		/* TIMING_CFG_8 */ 
-		{ 0x5e080250, 0x00220c11 },
+		{ 0x5e080250, 0x00110c11 },
 		/* TIMING_CFG_9 */ 
-		{ 0x5e080254, 0x00680068 },
+		{ 0x5e080254, 0x00680040 },
 		/* TIMING_CFG_10 */ 
 		{ 0x5e080258, 0x03000000 },
 		/* TIMING_CFG_11 */ 
