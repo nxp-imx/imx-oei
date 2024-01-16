@@ -82,7 +82,9 @@ TARGETS = $(OUT)/$(TARGET)
 
 img : $(TARGETS)
 
-all: clean img
+all :
+	$(AT)+$(MAKE) clean
+	$(AT)+$(MAKE) img
 
 .SUFFIXES :
 
