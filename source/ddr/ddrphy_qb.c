@@ -107,6 +107,9 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	int ret;
 	u32 to_addr, size, crc;
 	u16 *mb;
+#ifdef DEBUG
+	unsigned int ts, te;
+#endif
 
 	mb = (u16 *) QB_STATE_MEM;
 	fsp_msg = &dtiming->fsp_msg[fsp_id];
@@ -139,13 +142,24 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	dwc_ddrphy_apb_wr(0x20090, 0x0001);
 	dwc_ddrphy_apb_wr(0x20060, 0x0003);
 
+#ifdef DEBUG
+	ts = timer_get_us();
+#endif
 	/** 3.2.4 Step D Load QuickBoot IMEM */
 	ddr_load_train_firmware(NULL, IMEM);
-
+#ifdef DEBUG
+	te = timer_get_us() - ts;
+	printf("** DDR OEI: IMEM load in %u us **\n", te);
+	ts = timer_get_us();
+#endif
 	/** 3.2.5 Step F Load QuickBoot DMEM */
 	ddrphy_qb_restore(mb, fsp_msg, qb_state);
 	ddr_load_DMEM(mb, qb_state);
-
+#ifdef DEBUG
+	te = timer_get_us() - ts;
+	printf("** DDR OEI: DMEM load in %u us **\n", te);
+	ts = timer_get_us();
+#endif
 	/* excute the firmware */
 	dwc_ddrphy_apb_wr(0xd0000, 0x1); /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
 	dwc_ddrphy_apb_wr(0xd0099, 0x9);
@@ -161,14 +175,25 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	dwc_ddrphy_apb_wr(0xd0099, 0x1);
 	ddrphy_delay40(fsp_msg->drate);
 	dwc_ddrphy_apb_wr(0xd0000, 0x0); /* CSR bus: MCU--,PIE/DMA/TDR/APB++ */
-
+#ifdef DEBUG
+	te = timer_get_us() - ts;
+	printf("** DDR OEI: Quickboot FW run complete in %u us **\n", te);
+	ts = timer_get_us();
+#endif
 	/** 3.2.7 Step H Restore SRAM data */
 	for (i = 0, to_addr = ACSM_SRAM_BASE_ADDR; i < DDRPHY_QB_ACSM_SIZE; i++, to_addr++)
 		dwc_ddrphy_apb_wr(to_addr, qb_state->acsm[i]);
-
+#ifdef DEBUG
+	te = timer_get_us() - ts;
+	printf("** DDR OEI: ACSM SRAM restore in %u us **\n", te);
+	ts = timer_get_us();
+#endif
 	for (i = 0, to_addr = PSTATE_SRAM_BASE_ADDR; i < DDRPHY_QB_PST_SIZE; i++, to_addr++)
 		dwc_ddrphy_apb_wr(to_addr, qb_state->pst[i]);
-
+#ifdef DEBUG
+	te = timer_get_us() - ts;
+	printf("** DDR OEI: PSTATE SRAM restore in %u us **\n", te);
+#endif
 	/** 3.2.8 Step I Configure PHY for Hardware */
 #if defined(PUB1_xx)
 	dwc_ddrphy_apb_wr(0xd00e7, 0x400);
