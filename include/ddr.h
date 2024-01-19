@@ -44,6 +44,25 @@
 
 #define REG_DDR_ERR_EN        	(DDR_CTL_BASE + 0x1000)
 
+#define REG_AUTO_CG_CTRL	(DDRMIX_BCTRL_BASE + 0x10)
+/** DDR Controller automatic clock gating enable bit */
+#define AUTO_CG_ENA		BIT(16)
+/** DDR Controller hwffc and auto CG send ipg_stop allow bit */
+#define HWFFC_ACG_FORCE_B	BIT(17)
+/** DDR ACG is allowed for DDR Controller clock ipg_clk_dddrc */
+#define GATE_DDRC_CLK		BIT(24)
+/** DDR ACG is allowed for DDR Controller IPS clock ipg_clk_dddrc */
+#define GATE_DDRC_IPS_CLK	BIT(26)
+/** DDR ACG is allowed for DDRPHY DfiClk clock */
+#define GATE_DDRPHY_DFICLK	BIT(28)
+/** DDR ACG is allowed for DDRPHY APBCLK clock */
+#define GATE_DDRPHY_APBCLK	BIT(30)
+
+/** Nr of cycles for SSI being idle before DDRC clock gating */
+#define SSI_IDLE_STRAP		0x200
+
+#define SR_FAST_WK_EN		BIT(1)
+
 #define IP2APB_DDRPHY_IPS_BASE_ADDR(X)		(DDR_PHY_BASE + (X * 0x2000000))
 #define DDRPHY_MEM(X)				(DDR_PHY_BASE + (X * 0x2000000) + 0x50000)
 

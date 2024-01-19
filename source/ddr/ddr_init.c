@@ -131,7 +131,7 @@ static void ddrphy_coldreset(void)
 int ddr_init(struct dram_timing_info *dtiming)
 {
 	int ret;
-	u32 fsp_id, drate;
+	u32 fsp_id, drate, acg;
 
 	/* save the ddr info for retention */
 	ddr_cfg_save(dtiming);
@@ -180,6 +180,18 @@ int ddr_init(struct dram_timing_info *dtiming)
 	check_ddrc_idle();
 
 	while (readl(REG_DDR_MTCR) & 0x80000000);
+
+	/**
+	 * Enable auto clock gating feature
+	 * By default gate all options except GATE_DDRPHY_DFICLK
+	 */
+	acg  = HWFFC_ACG_FORCE_B | AUTO_CG_ENA | SSI_IDLE_STRAP;
+	acg |= GATE_DDRPHY_APBCLK | GATE_DDRC_IPS_CLK | GATE_DDRC_CLK;
+
+	setbits_le32(REG_AUTO_CG_CTRL, acg);
+
+	/** Set SR_FAST_WK_EN in REG_DDR_SDRAM_CFG_3 */
+	setbits_le32(REG_DDR_SDRAM_CFG_3, SR_FAST_WK_EN);
 
 	return 0;
 }
