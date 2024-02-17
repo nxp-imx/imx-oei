@@ -87,7 +87,7 @@ FLAGS += ${WARNS}
 # -pipe = use pipes instead of temporary files
 #
 ###################################
-CFLAGS = $(ARCHFLAGS) $(FLAGS) -MMD -ffunction-sections -fdata-sections -g -std=c99 -ffreestanding -fno-builtin -fshort-enums -mno-unaligned-access -pipe
+CFLAGS = $(ARCHFLAGS) $(FLAGS) -O3 -MMD -ffunction-sections -fdata-sections -g -std=c99 -ffreestanding -fno-builtin -fshort-enums -mno-unaligned-access -pipe
 
 #### SUMMARY OF LINKER FLAGS ####
 #

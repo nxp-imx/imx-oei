@@ -37,9 +37,9 @@ uint64_t timer_tick(void)
 
 	/* Do consecutive reads to guard against ripple */
 	do {
-		ms  = sctr->cntcv2;
-		ls  = sctr->cntcv1;
-		ms2 = sctr->cntcv2;
+		ms  = sctr->cntcv1;
+		ls  = sctr->cntcv0;
+		ms2 = sctr->cntcv1;
 	} while (ms != ms2);
 
 	ticks = ms;

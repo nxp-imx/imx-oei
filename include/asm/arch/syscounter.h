@@ -8,16 +8,16 @@
 
 /* System Counter */
 struct sctr_regs {
-	u32 cntcr;
-	u32 cntsr;
-	u32 cntcv1;
-	u32 cntcv2;
+	volatile u32 cntcr;
+	volatile u32 cntsr;
+	volatile u32 cntcv0;
+	volatile u32 cntcv1;
 	u32 resv1[4];
-	u32 cntfid0;
-	u32 cntfid1;
-	u32 cntfid2;
+	volatile u32 cntfid0;
+	volatile u32 cntfid1;
+	volatile u32 cntfid2;
 	u32 resv2[1001];
-	u32 counterid[1];
+	volatile u32 counterid[1];
 };
 
 #define SC_CNTCR_ENABLE		(1 << 0)

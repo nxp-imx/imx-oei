@@ -14,47 +14,47 @@ typedef struct
 
 /* WAKEUP.EDMA5 - Register Layout Typedef */
 typedef struct {
-    uint32_t MP_CSR;                            /**< Management Page Control Register, offset: 0x0 */
-    uint32_t MP_ES;                             /**< Management Page Error Status Register, offset: 0x4 */
-    uint32_t MP_INT_LOW;                        /**< Management Page Interrupt Request Status Register - Low, offset: 0x8 */
-    uint32_t MP_INT_HIGH;                       /**< Management Page Interrupt Request Status Register- High, offset: 0xC */
-    uint32_t MP_HRS_LOW;                        /**< Management Page Hardware Request Status Register - Low, offset: 0x10 */
-    uint32_t MP_HRS_HIGH;                       /**< Management Page Hardware Request Status Register - High, offset: 0x14 */
+    volatile uint32_t MP_CSR;                   /**< Management Page Control Register, offset: 0x0 */
+    volatile uint32_t MP_ES;                    /**< Management Page Error Status Register, offset: 0x4 */
+    volatile uint32_t MP_INT_LOW;               /*< Management Page Interrupt Request Status Register - Low, offset: 0x8 */
+    volatile uint32_t MP_INT_HIGH;              /**< Management Page Interrupt Request Status Register- High, offset: 0xC */
+    volatile uint32_t MP_HRS_LOW;               /**< Management Page Hardware Request Status Register - Low, offset: 0x10 */
+    volatile uint32_t MP_HRS_HIGH;              /**< Management Page Hardware Request Status Register - High, offset: 0x14 */
     uint8_t RESERVED_0[232];
-    uint32_t CH_GRPRI[64];                      /**< Channel Arbitration Group Register, array offset: 0x100, array step: 0x4 */
+    volatile uint32_t CH_GRPRI[64];             /**< Channel Arbitration Group Register, array offset: 0x100, array step: 0x4 */
     uint8_t RESERVED_1[65024];
     struct {                                    /* offset: 0x10000,  */
-        uint32_t CH_CSR;                        /**< Channel Control and Status Register, array offset: 0x10000,  */
-        uint32_t CH_ES;                         /**< Channel Error Status Register, array offset: 0x10004,  */
-        uint32_t CH_INT;                        /**< Channel Interrupt Status Register, array offset: 0x10008,  */
-        uint32_t CH_SBR;                        /**< Channel System Bus Register, array offset: 0x1000C,  */
-        uint32_t CH_PRI;                        /**< Channel Priority Register, array offset: 0x10010,  */
-        uint32_t CH_MUX;                        /**< Channel Multiplexor Configuration, array offset: 0x10014,  */
-        uint32_t CH_MATTR;                      /**< Memory Attributes Register, array offset: 0x10018,  */
+        volatile uint32_t CH_CSR;               /**< Channel Control and Status Register, array offset: 0x10000,  */
+        volatile uint32_t CH_ES;                /**< Channel Error Status Register, array offset: 0x10004,  */
+        volatile uint32_t CH_INT;               /**< Channel Interrupt Status Register, array offset: 0x10008,  */
+        volatile uint32_t CH_SBR;               /**< Channel System Bus Register, array offset: 0x1000C,  */
+        volatile uint32_t CH_PRI;               /**< Channel Priority Register, array offset: 0x10010,  */
+        volatile uint32_t CH_MUX;               /**< Channel Multiplexor Configuration, array offset: 0x10014,  */
+        volatile uint32_t CH_MATTR;             /**< Memory Attributes Register, array offset: 0x10018,  */
         uint8_t RESERVED_0[4];                  /* array offset: 0x1001C */
-        uint32_t SADDR;                         /**< TCD Source Address Register, array offset: 0x10020,  */
-        uint32_t SADDR_HIGH;                    /**< TCD Source Address Register, array offset: 0x10024,  */
-        uint16_t SOFF;                          /**< TCD Signed Source Address Offset Register, array offset: 0x10028,  */
-        uint16_t ATTR;                          /**< TCD Transfer Attributes Register, array offset: 0x1002A,  */
+        volatile uint32_t SADDR;                /**< TCD Source Address Register, array offset: 0x10020,  */
+        volatile uint32_t SADDR_HIGH;           /**< TCD Source Address Register, array offset: 0x10024,  */
+        volatile uint16_t SOFF;                 /**< TCD Signed Source Address Offset Register, array offset: 0x10028,  */
+        volatile uint16_t ATTR;                 /**< TCD Transfer Attributes Register, array offset: 0x1002A,  */
         union {                                 /* offset: 0x1002C,  */
-            uint32_t NBYTES_MLOFFNO;            /**< TCD Transfer Size without Minor Loop Offsets Register, array offset: 0x1002C,  */
-            uint32_t NBYTES_MLOFFYES;           /**< TCD Transfer Size with Minor Loop Offsets Register, array offset: 0x1002C,  */
+            volatile uint32_t NBYTES_MLOFFNO;   /**< TCD Transfer Size without Minor Loop Offsets Register, array offset: 0x1002C,  */
+            volatile uint32_t NBYTES_MLOFFYES;  /**< TCD Transfer Size with Minor Loop Offsets Register, array offset: 0x1002C,  */
         };
-        uint32_t SLAST_SDA;                     /**< TCD Last Source Address Adjustment / Store DADDR Address Register, array offset: 0x10030,  */
-        uint32_t SLAST_SDA_HIGH;                /**< TCD Last Source Address Adjustment / Store DADDR Address Register, array offset: 0x10034,  */
-        uint32_t DADDR;                         /**< TCD Destination Address Register, array offset: 0x10038,  */
-        uint32_t DADDR_HIGH;                    /**< TCD Destination Address Register, array offset: 0x1003C,  */
-        uint32_t DLAST_SGA;                     /**< TCD Last Destination Address Adjustment / Scatter Gather Address Register, array offset: 0x10040,  */
-        uint32_t DLAST_SGA_HIGH;                /**< TCD Last Destination Address Adjustment / Scatter Gather Address Register, array offset: 0x10044,  */
-        uint16_t DOFF;                          /**< TCD Signed Destination Address Offset Register, array offset: 0x10048,  */
+        volatile uint32_t SLAST_SDA;            /**< TCD Last Source Address Adjustment / Store DADDR Address Register, array offset: 0x10030,  */
+        volatile uint32_t SLAST_SDA_HIGH;       /**< TCD Last Source Address Adjustment / Store DADDR Address Register, array offset: 0x10034,  */
+        volatile uint32_t DADDR;                /**< TCD Destination Address Register, array offset: 0x10038,  */
+        volatile uint32_t DADDR_HIGH;           /**< TCD Destination Address Register, array offset: 0x1003C,  */
+        volatile uint32_t DLAST_SGA;            /**< TCD Last Destination Address Adjustment / Scatter Gather Address Register, array offset: 0x10040,  */
+        volatile uint32_t DLAST_SGA_HIGH;       /**< TCD Last Destination Address Adjustment / Scatter Gather Address Register, array offset: 0x10044,  */
+        volatile uint16_t DOFF;                 /**< TCD Signed Destination Address Offset Register, array offset: 0x10048,  */
         union {                                 /* offset: 0x1004A,  */
-            uint16_t CITER_ELINKNO;             /**< TCD Current Major Loop Count (Minor Loop Channel Linking Disabled) Register, array offset: 0x1004A,  */
-            uint16_t CITER_ELINKYES;            /**< TCD Current Major Loop Count (Minor Loop Channel Linking Enabled) Register, array offset: 0x1004A,  */
+            volatile uint16_t CITER_ELINKNO;    /**< TCD Current Major Loop Count (Minor Loop Channel Linking Disabled) Register, array offset: 0x1004A,  */
+            volatile uint16_t CITER_ELINKYES;   /**< TCD Current Major Loop Count (Minor Loop Channel Linking Enabled) Register, array offset: 0x1004A,  */
         };
-        uint16_t CSR;                           /**< TCD Control and Status Register, array offset: 0x1004C,  */
+        volatile uint16_t CSR;                  /**< TCD Control and Status Register, array offset: 0x1004C,  */
         union {                                 /* offset: 0x1004E,  */
-            uint16_t BITER_ELINKNO;             /**< TCD Beginning Major Loop Count (Minor Loop Channel Linking Disabled) Register, array offset: 0x1004E,  */
-            uint16_t BITER_ELINKYES;            /**< TCD Beginning Major Loop Count (Minor Loop Channel Linking Enabled) Register, array offset: 0x1004E,  */
+            volatile uint16_t BITER_ELINKNO;    /**< TCD Beginning Major Loop Count (Minor Loop Channel Linking Disabled) Register, array offset: 0x1004E,  */
+            volatile uint16_t BITER_ELINKYES;   /**< TCD Beginning Major Loop Count (Minor Loop Channel Linking Enabled) Register, array offset: 0x1004E,  */
         };
         uint8_t RESERVED_1[0x8000 - 0x4E - 2];
     } TCD[64];
