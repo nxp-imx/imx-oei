@@ -25,8 +25,11 @@ void timer_enable(void)
 bool timer_is_enabled(void)
 {
 	struct sctr_regs *sctr = (struct sctr_regs *)SYSCNT_CTRL_BASE_ADDR;
+	uint32_t cntcr;
 
-	return (sctr->cntcr & BIT(SC_CNTCR_ENABLE)) ? true : false;
+	cntcr = readl(&sctr->cntcr);
+
+	return (cntcr & BIT(SC_CNTCR_ENABLE)) ? true : false;
 }
 
 uint64_t timer_tick(void)
@@ -37,9 +40,9 @@ uint64_t timer_tick(void)
 
 	/* Do consecutive reads to guard against ripple */
 	do {
-		ms  = sctr->cntcv1;
-		ls  = sctr->cntcv0;
-		ms2 = sctr->cntcv1;
+		ms  = readl(&sctr->cntcv1);
+		ls  = readl(&sctr->cntcv0);
+		ms2 = readl(&sctr->cntcv1);
 	} while (ms != ms2);
 
 	ticks = ms;
