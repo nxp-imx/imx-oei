@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd `dirname $0`
-
 extentions=( h c hpp cpp cc )
 rm -f sf.list
 
