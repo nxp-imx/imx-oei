@@ -30,4 +30,6 @@ typedef uint32  uint32_t;
 typedef uint64  uint64_t;
 typedef uint64  ulong;
 
+typedef volatile uint32_t __IOU32;
+typedef volatile uint16_t __IOU16;
 #endif

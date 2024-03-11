@@ -1,3 +1,6 @@
+include $(ROOT_DIR)/devices/$(SOC)/Makefile
+include $(ROOT_DIR)/source/drivers/edma/Makefile
+
 ifeq ($(oei), ddr)
 include $(ROOT_DIR)/source/ddr/Makefile
 else ifeq ($(oei), tcm)
@@ -18,6 +21,7 @@ OBJS += \
 endif
 
 INCLUDE += -Iinclude
+INCLUDE += -I$(SOC_DEVICE_DIR)
 
 VPATH += \
 	source/utils \
