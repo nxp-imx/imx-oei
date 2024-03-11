@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2022-2023 NXP
+ * Copyright 2022-2024 NXP
  */
 
 #include <errno.h>
@@ -154,20 +154,20 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	ts = timer_get_us();
 #endif
 	/** 3.2.4 Step D Load QuickBoot IMEM */
-	ddr_load_train_firmware(NULL, IMEM);
-#ifdef DEBUG
-	te = timer_get_us() - ts;
-	printf("** DDR OEI: IMEM load in %u us **\n", te);
-	ts = timer_get_us();
-#endif
+	phy_ops.ddr_pre_load_firmware(NULL, IMEM);
+	phy_ops.ddr_do_load_firmware(IMEM);
+
 	/** 3.2.5 Step F Load QuickBoot DMEM */
 	ddrphy_qb_restore(mb, fsp_msg, qb_state);
-	ddr_load_DMEM(mb, qb_state);
+	phy_ops.ddr_load_DMEM(mb, qb_state);
+	phy_ops.ddr_post_load_firmware(IMEM);
+	phy_ops.ddr_post_load_firmware(DMEM);
 #ifdef DEBUG
 	te = timer_get_us() - ts;
-	printf("** DDR OEI: DMEM load in %u us **\n", te);
+	printf("** DDR OEI: IMEM + DMEM load in %u us **\n", te);
 	ts = timer_get_us();
 #endif
+
 	/* excute the firmware */
 	dwc_ddrphy_apb_wr(0xd0000, 0x1); /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
 	dwc_ddrphy_apb_wr(0xd0099, 0x9);
@@ -189,8 +189,7 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	ts = timer_get_us();
 #endif
 	/** 3.2.7 Step H Restore SRAM data */
-	for (i = 0, to_addr = ACSM_SRAM_BASE_ADDR; i < DDRPHY_QB_ACSM_SIZE; i++, to_addr++)
-		dwc_ddrphy_apb_wr(to_addr, qb_state->acsm[i]);
+	phy_ops.acsm_sram_restore(qb_state);
 #ifdef DEBUG
 	te = timer_get_us() - ts;
 	printf("** DDR OEI: ACSM SRAM restore in %u us **\n", te);

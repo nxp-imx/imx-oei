@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2018, 2023 NXP
+ * Copyright 2018, 2023-2024 NXP
  */
 
 #include "ddr.h"
@@ -35,15 +35,13 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 	/* config phy common reg */
 	ddrphy_cfg_set(dtiming->ddrphy_cfg, dtiming->ddrphy_cfg_num);
 
-	/* load training firmwrae iMEM */
 #ifdef DEBUG
 	ts = timer_get_us();
 #endif
-	ddr_load_train_firmware(NULL, IMEM);
-#ifdef DEBUG
-	te = timer_get_us() - ts;
-	printf("** DDR OEI: IMEM load in %u us **\n", te);
-#endif
+
+	/** 3.2.4 Step D Load QuickBoot IMEM */
+	phy_ops.ddr_pre_load_firmware(NULL, IMEM);
+	phy_ops.ddr_do_load_firmware(IMEM);
 
 	/* load the frequency setpoint message block config */
 	fsp_msg = dtiming->fsp_msg;
@@ -58,14 +56,21 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 		/* set dram PHY input clocks to desired frequency */
 		ddrphy_init_set_dfi_clk(fsp_msg->drate);
 
+		if (i == 0) {
+			phy_ops.ddr_post_load_firmware(IMEM);
+		}
 		/* load the dram training firmware image */
-#ifdef DEBUG
-		ts = timer_get_us();
-#endif
-		ddr_load_train_firmware(fsp_msg, DMEM);
+		phy_ops.ddr_pre_load_firmware(fsp_msg, DMEM);
+		phy_ops.ddr_do_load_firmware(DMEM);
+		phy_ops.ddr_post_load_firmware(DMEM);
 #ifdef DEBUG
 		te = timer_get_us() - ts;
-		printf("** DDR OEI: DMEM load in %u us **\n", te);
+		if (i == 0) {
+			printf("** DDR OEI: IMEM + DMEM load in %u us **\n", te);
+		} else {
+			printf("** DDR OEI: DMEM load in %u us **\n", te);
+		}
+		ts = timer_get_us();
 #endif
 
 		/*
@@ -78,9 +83,6 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 		 * 4. read the message block result.
 		 * -------------------------------------------------------------
 		 */
-#ifdef DEBUG
-		ts = timer_get_us();
-#endif
 		dwc_ddrphy_apb_wr(0xd0000, 0x1); /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
 		dwc_ddrphy_apb_wr(0xd0099, 0x9);
 		dwc_ddrphy_apb_wr(0xd0099, 0x1);
@@ -98,6 +100,7 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 #ifdef DEBUG
 		te = timer_get_us() - ts;
 		printf("** DDR OEI: TRAINING complete in %u us **\n", te);
+		ts = timer_get_us();
 #endif
 
 		/* Read the Message Block results */

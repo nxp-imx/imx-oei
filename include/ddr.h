@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Copyright 2022-2023 NXP
+ * Copyright 2022-2024 NXP
  */
 
 #ifndef __ASM_ARCH_IMX9_DDR_H
@@ -71,6 +71,11 @@
 
 #define IMEM_OFFSET_ADDR 0x00050000
 #define DMEM_OFFSET_ADDR 0x00058000
+
+struct ddr_fw_header {
+	u32 imem_size;
+	u32 dmem_size;
+};
 
 /* PHY State */
 enum pstate {
@@ -158,7 +163,6 @@ struct dram_timing_info {
 
 extern struct dram_timing_info dram_timing;
 
-void ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_type type);
 int ddr_init(struct dram_timing_info *timing_info);
 int ddr_cfg_phy(struct dram_timing_info *timing_info);
 
@@ -235,9 +239,32 @@ typedef struct {
 	u16 pst[DDRPHY_QB_PST_SIZE];
 } ddrphy_qb_state;
 
+/**
+ * struct ddr_phy_ops  - ddr phy operations to load ddr phy firmware.
+ *
+ * @ddr_pre_load_firmware: Configure eDMA registers in case eDMA is used
+ *                         or loads data with the execution core for no edma case.
+ * @ddr_do_load_firmware: Used to start the transfer when eDMA is used or do nothing (dummy function)
+ *                        when not using edma.
+ * @ddr_post_load_firmware: Used to wait the eDMA transfer or do nothing (dummy function) when not
+ *                          using edma.
+ * @ddr_load_DMEM: Loads DMEM for Quick Boot mode selection.
+ * @acsm_sram_restore: Restore SRAM data for Quick boot mode selection.
+ */
+struct ddr_phy_ops {
+	void (*ddr_pre_load_firmware)(struct dram_fsp_msg *fsp_msg, enum mem_type type);
+	void (*ddr_do_load_firmware)(enum mem_type type);
+	void (*ddr_post_load_firmware)(enum mem_type type);
+#if defined(CONFIG_DDR_QBOOT)
+	void (*ddr_load_DMEM)(u16 *msg_blk, ddrphy_qb_state *qb_state);
+	void (*acsm_sram_restore)(ddrphy_qb_state *qb_state);
+#endif
+};
+
+extern struct ddr_phy_ops phy_ops;
+
 #if defined(CONFIG_DDR_QBOOT)
 int ddr_cfg_phy_qb(struct dram_timing_info *timing_info, int fsp_id);
-void ddr_load_DMEM(u16 *msg_blk, ddrphy_qb_state *qb_state);
 u32 ddr_get_qb_state_addr(void);
 #else
 void ddrphy_qb_save(void);
