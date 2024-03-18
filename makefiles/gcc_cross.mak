@@ -39,10 +39,11 @@ endif
 
 # Configure toolchain
 OEI_CROSS_COMPILE ?= $(TOOLS)/arm-gnu-toolchain-*-none-eabi/bin/arm-none-eabi-
-ARCHFLAGS = -mcpu=cortex-$(cpu) -mthumb -mfloat-abi=softfp
+ARCHFLAGS = -mcpu=cortex-$(cpu) -mthumb -mfloat-abi=soft
 
-CC = $(OEI_CROSS_COMPILE)gcc
-LD = $(OEI_CROSS_COMPILE)ld
+cc = gcc
+CC = $(OEI_CROSS_COMPILE)$(cc)
+LD = $(OEI_CROSS_COMPILE)$(cc)
 OBJCOPY = $(OEI_CROSS_COMPILE)objcopy
 SIZE = $(OEI_CROSS_COMPILE)size
 FLAGS += -DCPU_$(SOCFULL)_c$(cpu) -D$(SOC)
@@ -87,7 +88,7 @@ FLAGS += ${WARNS}
 # -pipe = use pipes instead of temporary files
 #
 ###################################
-CFLAGS = $(ARCHFLAGS) $(FLAGS) -O3 -MMD -ffunction-sections -fdata-sections -g -std=c99 -ffreestanding -fno-builtin -fshort-enums -mno-unaligned-access -pipe
+CFLAGS = $(ARCHFLAGS) $(FLAGS) -MMD -O3 -ffunction-sections -fdata-sections -g -std=c99 -ffreestanding -fno-builtin -fshort-enums -mno-unaligned-access -pipe
 
 #### SUMMARY OF LINKER FLAGS ####
 #
@@ -97,4 +98,4 @@ CFLAGS = $(ARCHFLAGS) $(FLAGS) -O3 -MMD -ffunction-sections -fdata-sections -g -
 # -T = specifies linker script
 # 
 #################################
-LFLAGS = -nostdlib -gc-sections -Map=$(OUT)/$(IMG).map -no-warn-rwx-segments -T$(SOC_DEVICE_DIR)/gcc/$(LCF).ld
+LFLAGS += $(ARCHFLAGS) -Wl,--gc-sections -Wl,-Map=$(OUT)/$(IMG).map -nostdlib -nodefaultlibs -Wl,--no-warn-rwx-segments -T$(SOC_DEVICE_DIR)/gcc/$(LCF).ld

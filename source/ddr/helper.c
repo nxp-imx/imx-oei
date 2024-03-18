@@ -5,6 +5,7 @@
 #include <asm/io.h>
 #include <errno.h>
 #include "ddr.h"
+#include "ddr_retention.h"
 
 static char _end[0] __attribute__((section(".__end")));
 
@@ -123,3 +124,88 @@ void ddr_load_DMEM(u16 *msg_blk, ddrphy_qb_state *qb_state)
 	}
 }
 #endif
+
+void ddr_cfg_save(struct dram_timing_info *dtiming)
+{
+	struct ddr_info* ddr = (struct ddr_info*)0x2001A000;
+	unsigned int i, j;
+
+	/* zero init the 64K buffer to avoid ECC errors */
+	for (i = 0; i < 0xFFFF; i+=4) {
+		writel(0, 0x2001A000 + i);
+	}
+
+	/* ddrc config next after the ddr_into struct */
+	ddr->ddrc_cfg = (struct ddrc*)((unsigned int)ddr + sizeof(struct ddr_info));
+	/* number of ddr registers */
+	ddr->ddrc_cfg_num = dtiming->ddrc_cfg_num;
+
+	/* save register address and value */
+	for (i = 0; i < ddr->ddrc_cfg_num; i++) {
+		ddr->ddrc_cfg[i].reg = dtiming->ddrc_cfg[i].reg;
+		ddr->ddrc_cfg[i].val = dtiming->ddrc_cfg[i].val;
+	}
+
+	/* number of pstates */
+	ddr->pstate_num = dtiming->fsp_cfg_num;
+	/* pstate struct is after ddrc_cfg */
+	ddr->pstate = (struct ddrc_pstate*)((unsigned int)ddr->ddrc_cfg + (ddr->ddrc_cfg_num * sizeof(struct ddrc)));
+
+	for (j = 0; j < ddr->pstate_num; j++)
+	{
+		/* number of pstate specific ddrc registers */
+		ddr->pstate[j].cfg_num = dtiming->fsp_cfg[j].ddrc_cfg_num;
+		if (j > 0) {
+			/* skip previous pstate structure */
+			ddr->pstate[j].cfg = (struct ddrc*)((unsigned int)ddr->pstate[j-1].cfg + (ddr->pstate[j-1].cfg_num *sizeof(struct ddrc)));
+		}
+		else {
+			/* first pstate cfg, skip no. of ddr_pstate structs */
+			ddr->pstate[j].cfg = (struct ddrc*)((unsigned int)ddr->pstate + (sizeof(struct ddrc_pstate) * ddr->pstate_num));
+		}
+
+		/* save pstate specific register address and value */
+		for (i = 0; i < ddr->pstate[j].cfg_num; i++) {
+			ddr->pstate[j].cfg[i].reg = dtiming->fsp_cfg[j].ddrc_cfg[i].reg;
+			ddr->pstate[j].cfg[i].val = dtiming->fsp_cfg[j].ddrc_cfg[i].val;
+		}
+	}
+
+	/* save number of trained phy config registers */
+	ddr->ddrphy_trained_csr_num = dtiming->ddrphy_trained_csr_num;
+	/* skip last pstate struct */
+	ddr->trained_csr = (struct ddrphy *)((unsigned int)ddr->pstate[ddr->pstate_num-1].cfg + (ddr->pstate[ddr->pstate_num-1].cfg_num * sizeof(struct ddrc)));
+
+	/* save ddrphy trained csr registers only, value will be saved after phy training completes */
+	for (i = 0; i < ddr->ddrphy_trained_csr_num; i++) {
+		ddr->trained_csr[i].reg = dtiming->ddrphy_trained_csr[i].reg;
+	}
+
+	/* save pstate frequencies */
+	for (i = 0; i < ddr->pstate_num; i++) {
+		ddr->pstate_freq[i] = dtiming->fsp_table[i];
+	}
+}
+
+void ddrphy_trained_csr_save(void)
+{
+	unsigned int i = 0;
+	struct ddr_info* ddr = (struct ddr_info*)0x2001A000;
+
+	/* enable the ddrphy apb */
+	dwc_ddrphy_apb_wr(0xd0000, 0x0);
+	dwc_ddrphy_apb_wr(0xc0080, 0x3);
+
+	/* save ddrphy trained csr value */
+        for (i = 0; i < ddr->ddrphy_trained_csr_num; i++) {
+                ddr->trained_csr[i].val = dwc_ddrphy_apb_rd(ddr->trained_csr[i].reg);
+        }
+
+	/* save ZQ calibration codes */
+	ddr->ZQCalCodePU = dwc_ddrphy_apb_rd(0x20326);
+	ddr->ZQCalCodePD = dwc_ddrphy_apb_rd(0x20327);
+
+	/* disable the ddrphy apb */
+	dwc_ddrphy_apb_wr(0xc0080, 0x2);
+	dwc_ddrphy_apb_wr(0xd0000, 0x1);
+}

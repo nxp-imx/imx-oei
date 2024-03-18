@@ -133,6 +133,9 @@ int ddr_init(struct dram_timing_info *dtiming)
 	int ret;
 	u32 fsp_id, drate;
 
+	/* save the ddr info for retention */
+	ddr_cfg_save(dtiming);
+
 	/* reset ddrphy */
 	ddrphy_coldreset();
 
@@ -163,6 +166,10 @@ int ddr_init(struct dram_timing_info *dtiming)
 
 	ddrphy_qb_save();
 #endif
+
+	/* save the ddr PHY trained CSR for retention */
+	ddrphy_trained_csr_save();
+
 	/* program the ddrc registers */
 	ddrc_config(dtiming, fsp_id);
 

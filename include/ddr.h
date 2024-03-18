@@ -148,6 +148,8 @@ int wait_ddrphy_training_complete(void);
 void ddrphy_init_set_dfi_clk(unsigned int drate);
 void ddrphy_init_read_msg_block(void);
 void ddrphy_cfg_set(struct ddrphy_cfg_param *cfg, unsigned int num);
+void ddr_cfg_save(struct dram_timing_info *dtiming);
+void ddrphy_trained_csr_save(void);
 
 #define ddrphy_addr_remap(paddr_apb_from_ctlr)	(paddr_apb_from_ctlr << 2)
 
