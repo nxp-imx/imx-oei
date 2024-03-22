@@ -2,11 +2,16 @@
 /*
  * Copyright 2023-2024 NXP
  */
-#include <asm/arch/ccm_regs.h>
-#include <asm/arch/clock.h>
-#include <asm/types.h>
+#include "debug.h"
 #include "edma.h"
+#include "soc_edma.h"
 
+/**
+ * struct mem_tbl - defined a memory block with start and end address
+ *
+ * @start_addr - start address of the memory block
+ * @end_addr   - end address of the memory block
+ */
 typedef struct
 {
 	unsigned int start_addr;
@@ -25,10 +30,7 @@ void power_up_m7mix(void)
 static int tcm_init_by_dma(void)
 {
 	int ret = -1;
-/*	unsigned int itcm_size = CM7_ITCM_END_ADDR -  CM7_ITCM_START_ADDR + 1;
-	unsigned int dtcm_size = CM7_DTCM_END_ADDR -  CM7_DTCM_START_ADDR + 1; */
 	u32 i = 0;
-	u32 j = 0;
 	mem_tbl tcm_tbl[] = {
 					{CM7_ITCM_START_ADDR, CM7_ITCM_END_ADDR},
 					{CM7_DTCM_START_ADDR, CM7_DTCM_END_ADDR}
@@ -36,38 +38,23 @@ static int tcm_init_by_dma(void)
 	unsigned int transfer_size = 0;
 
 	power_up_m7mix();
-	for (i = 0; i < sizeof(tcm_tbl) / sizeof(mem_tbl); i++)
-	{
-		for (j = tcm_tbl[i].start_addr; ;)
+	for (i = 0; i < sizeof(tcm_tbl) / sizeof(mem_tbl); i++){
+		transfer_size = (tcm_tbl[i].end_addr - tcm_tbl[i].start_addr) + 1;
+		edma_ops.en_master_rep(EDMA2_BASE_ADDR, EDMA_CH0);
+		edma_ops.set_tbytes(EDMA2_BASE_ADDR, EDMA_CH0, 128, 128);
+		ret = edma_ops.configure(EDMA2_BASE_ADDR, EDMA_CH0 , OCRAM_START_ADDR, 128, tcm_tbl[i].start_addr, 128, transfer_size, 1);
+		if (ret != 0)
 		{
-			if (j + OCRAM_SOURCE_DATA_SIZE <=  tcm_tbl[i].end_addr)
-			{
-				transfer_size = OCRAM_SOURCE_DATA_SIZE;
-			}
-			else
-			{
-				transfer_size = tcm_tbl[i].end_addr - j + 1;
-			}
-			edma_ops.en_master_rep(EDMA2_BASE_ADDR, EDMA_CH0);
-			ret = edma_ops.configure(EDMA2_BASE_ADDR, EDMA_CH0 ,OCRAM_START_ADDR, 8, j, 8, transfer_size, 2);
-			if (ret != 0)
-			{
-				goto exit;
-			}
-			edma_ops.set_tbytes(EDMA2_BASE_ADDR, EDMA_CH0, 8, 8);
-			edma_ops.start_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
-			ret = edma_ops.wait_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
-			if (ret != 0)
-			{
-				goto exit;
-			}
-			edma_ops.clr_tcd(EDMA2_BASE_ADDR, EDMA_CH0);
-			j += transfer_size;
-			if ( j == tcm_tbl[i].end_addr + 1)
-			{
-				break;
-			}
+			goto exit;
 		}
+		edma_ops.write_only(EDMA2_BASE_ADDR, EDMA_CH0);
+		edma_ops.start_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
+		ret = edma_ops.check_edma(EDMA2_BASE_ADDR, EDMA_CH0);
+		if (ret != 0)
+		{
+			goto exit;
+		}
+		edma_ops.wait_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
 	}
 
 exit:
