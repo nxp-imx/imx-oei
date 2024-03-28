@@ -4,8 +4,6 @@
  */
 
 #include <errno.h>
-#include "crc.h"
-#include "ddr.h"
 #include "debug.h"
 #include "time.h"
 #if defined(DDR4x)
@@ -13,6 +11,7 @@
 #elif defined(DDR5)
 #include "ddr/msb_ddr5.h"
 #endif
+#include "soc_ddr.h"
 
 static void ddrphy_delay40(unsigned int drate)
 {
@@ -110,25 +109,17 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 {
 	struct dram_fsp_msg *fsp_msg;
 	ddrphy_qb_state *qb_state;
-	u32 qb_state_addr;
 	unsigned int i;
 	int ret;
-	u32 to_addr, size, crc;
+	u32 to_addr;
 	u16 *mb;
 #ifdef DEBUG
 	unsigned int ts, te;
 #endif
 
-	mb = (u16 *) QB_STATE_MEM;
+	mb = (u16 *) QB_STATE_SAVE_ADDR;
 	fsp_msg = &dtiming->fsp_msg[fsp_id];
-	qb_state_addr = ddr_get_qb_state_addr();
-	qb_state = (ddrphy_qb_state *)(qb_state_addr);
-
-	size = sizeof(ddrphy_qb_state) - sizeof(u32);
-	crc = crc32(&qb_state->TrainedVREFCA_A0, size);
-
-	if (crc != qb_state->crc)
-		return -1;
+	qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
 
 	/** 3.2.2 MemReset Toggle */
 	ddrphy_delay40(fsp_msg->drate);
@@ -154,7 +145,7 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 	ts = timer_get_us();
 #endif
 	/** 3.2.4 Step D Load QuickBoot IMEM */
-	phy_ops.ddr_pre_load_firmware(NULL, IMEM);
+	phy_ops.ddr_pre_load_firmware(NULL, IMEM, DDRFW_QUICKBOOT);
 	phy_ops.ddr_do_load_firmware(IMEM);
 
 	/** 3.2.5 Step F Load QuickBoot DMEM */
@@ -209,6 +200,13 @@ int ddr_cfg_phy_qb(struct dram_timing_info *dtiming, int fsp_id)
 #endif
 	dwc_ddrphy_apb_wr(0xc0080, 0x2);
 	dwc_ddrphy_apb_wr(0xd0000, 0x1);
+
+	/**
+	 * Invalidate the storage used by training flow
+	 * to store training data
+	 */
+	qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
+	qb_state->crc = 0;
 
 	return 0;
 }

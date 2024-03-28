@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2023 NXP
+ * Copyright 2023,2024 NXP
  */
 #include "crc.h"
 #include "ddr/qb_p230_rldb4.h"
+#include "soc_ddr.h"
 #include "time.h"
 
 static u8 ddrphy_read_mb_u8(u32 offset)
@@ -29,7 +30,7 @@ static u8 ddrphy_read_mb_u8(u32 offset)
 void ddrphy_qb_save(void)
 {
 	u32 i, addr, mux, ucc, size;
-	ddrphy_qb_state *qb_state = (ddrphy_qb_state *) QB_STATE_MEM;
+	ddrphy_qb_state *qb_state = (ddrphy_qb_state *) QB_STATE_SAVE_ADDR;
 
 	/* enable the ddrphy apb */
 	mux = dwc_ddrphy_apb_rd(0xd0000);

@@ -8,13 +8,11 @@ OBJS += \
 	$(OUT)/helper.o \
 	$(OUT)/crc.o
 
-QB = $(shell echo $(QBOOT) | tr A-Z a-z)
-ifeq (${QB}, yes)
-FLAGS += -DCONFIG_DDR_QBOOT
-OBJS  += $(OUT)/ddrphy_qb.o
-else
-OBJS  += $(OUT)/ddrphy_train.o $(OUT)/ddrphy_qb_gen.o
-endif
+OBJS  += \
+	$(OUT)/ddrphy_qb.o \
+	$(OUT)/ddrphy_train.o \
+	$(OUT)/ddrphy_qb_gen.o \
+	$(OUT)/romapi.o
 
 VPATH += source/ddr
 

@@ -40,7 +40,7 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 #endif
 
 	/** 3.2.4 Step D Load QuickBoot IMEM */
-	phy_ops.ddr_pre_load_firmware(NULL, IMEM);
+	phy_ops.ddr_pre_load_firmware(NULL, IMEM, DDRFW_TRAINING);
 	phy_ops.ddr_do_load_firmware(IMEM);
 
 	/* load the frequency setpoint message block config */
@@ -60,7 +60,7 @@ int ddr_cfg_phy(struct dram_timing_info *dtiming)
 			phy_ops.ddr_post_load_firmware(IMEM);
 		}
 		/* load the dram training firmware image */
-		phy_ops.ddr_pre_load_firmware(fsp_msg, DMEM);
+		phy_ops.ddr_pre_load_firmware(fsp_msg, DMEM, DDRFW_TRAINING);
 		phy_ops.ddr_do_load_firmware(DMEM);
 		phy_ops.ddr_post_load_firmware(DMEM);
 #ifdef DEBUG

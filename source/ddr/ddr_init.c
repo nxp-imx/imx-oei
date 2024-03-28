@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2022-2023 NXP
+ * Copyright 2022-2024 NXP
  */
-#include "ddr.h"
 #include <asm/io.h>
 #include "time.h"
 #include "iopoll.h"
+#include "soc_ddr.h"
 
 #define MAX(a, b)	(((a) > (b)) ? (a) : (b))
 
@@ -133,9 +133,6 @@ int ddr_init(struct dram_timing_info *dtiming)
 	int ret;
 	u32 fsp_id, drate, acg;
 
-	/* save the ddr info for retention */
-	ddr_cfg_save(dtiming);
-
 	/* reset ddrphy */
 	ddrphy_coldreset();
 
@@ -150,22 +147,25 @@ int ddr_init(struct dram_timing_info *dtiming)
 	/* default to the last frequency point clock */
 	ddrphy_init_set_dfi_clk(drate);
 
-#if defined(CONFIG_DDR_QBOOT)
-	/* Configure PHY in QuickBoot mode */
-	ret = ddr_cfg_phy_qb(dtiming, fsp_id);
-	if (ret)
-		return ret;
-#else
-	/*
-	 * Start PHY initialization and training by
-	 * accessing relevant PUB registers
-	 */
-	ret = ddr_cfg_phy(dtiming);
-	if (ret)
-		return ret;
+	if (ddr_training_data_check()) {
+		/* Configure PHY in QuickBoot mode */
+		ret = ddr_cfg_phy_qb(dtiming, fsp_id);
+		if (ret)
+			return ret;
+	} else {
+		/*
+		 * Start PHY initialization and training by
+		 * accessing relevant PUB registers
+		 */
+		ret = ddr_cfg_phy(dtiming);
+		if (ret)
+			return ret;
 
-	ddrphy_qb_save();
-#endif
+		ddrphy_qb_save();
+	}
+
+	/* save the ddr info for retention */
+	ddr_cfg_save(dtiming);
 
 	/* save the ddr PHY trained CSR for retention */
 	ddrphy_trained_csr_save();

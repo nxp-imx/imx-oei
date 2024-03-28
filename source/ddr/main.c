@@ -1,14 +1,15 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Copyright 2023 NXP
+ * Copyright 2023,2024 NXP
  */
-#include "ddr.h"
 #include <asm/arch/clock.h>
 #include <time.h>
 #include "oei.h"
 #include "debug.h"
 #include "lpuart.h"
 #include "pinmux.h"
+#include "rom_api.h"
+#include "soc_ddr.h"
 #include "build_info.h"
 
 #ifdef  DDR_MEM_TEST
@@ -35,9 +36,31 @@ static u32 mem_test(ulong addr, u32 val, u32 index, u32 len)
 }
 #endif
 
+/**
+ * Load training data needed for quick boot flow from container
+ *
+ * @param offset	training data offset within the container
+ *			= 0 if ROM has no support for dummy entry, non-zero otherwise
+ *
+ * @return		ROM_API_OKAY if data of expected size was loaded
+ *			ROM_API_ERR_INV_PAR otherwise
+ */
+static u32 ddr_load_training_data(u32 offset)
+{
+	void *dest = (void *)QB_STATE_LOAD_ADDR;
+	u32 size;
+
+	if (!offset && get_training_data_offset(&offset) != ROM_API_OKAY)
+		return ROM_API_ERR_INV_PAR;
+
+	size = rom_api_read(offset, QB_STATE_LOAD_SIZE, dest);
+
+	return (size == QB_STATE_LOAD_SIZE ? ROM_API_OKAY : ROM_API_ERR_INV_PAR);
+}
+
 uint32_t __attribute__((section(".entry"))) oei_entry(void)
 {
-	int ret;
+	int ret = 0;
 #ifdef DDR_MEM_TEST
 	int fail = 0;
 #endif
@@ -48,11 +71,16 @@ uint32_t __attribute__((section(".entry"))) oei_entry(void)
 	pinmux_config();
 	lpuart32_serial_init();
 
-#ifdef	CONFIG_DDR_QBOOT
-	printf("\n\n** DDR OEI: QuickBoot, commit: %08x **\n", OEI_COMMIT);
-#else
-	printf("\n\n** DDR OEI: Training, commit: %08x **\n", OEI_COMMIT);
-#endif
+	printf("\n\n** DDR OEI: commit: %08x **\n", OEI_COMMIT);
+
+	/**
+	 * Pass offset = 0 for iMX95 A0 since there is no ROM support
+	 * for training data dummy entry
+	 */
+	ret = ddr_load_training_data(0);
+	if (ret != ROM_API_OKAY) {
+		return OEI_FAIL;
+	}
 
 	ret = ddr_init(&dram_timing);
 

@@ -204,7 +204,11 @@ void ddrphy_trained_csr_save(void);
 #define ACSM_SRAM_BASE_ADDR	0x41000
 #define PSTATE_SRAM_BASE_ADDR	0xA0000
 
-#define QB_STATE_MEM		0x4aaf4000
+enum ddrfw_type {
+	DDRFW_TRAINING,
+	DDRFW_QUICKBOOT,
+};
+
 typedef struct {
 	u32 crc;
 	u8 TrainedVREFCA_A0;
@@ -252,21 +256,34 @@ typedef struct {
  * @acsm_sram_restore: Restore SRAM data for Quick boot mode selection.
  */
 struct ddr_phy_ops {
-	void (*ddr_pre_load_firmware)(struct dram_fsp_msg *fsp_msg, enum mem_type type);
+	void (*ddr_pre_load_firmware)(struct dram_fsp_msg *fsp_msg, enum mem_type type, enum ddrfw_type fw);
 	void (*ddr_do_load_firmware)(enum mem_type type);
 	void (*ddr_post_load_firmware)(enum mem_type type);
-#if defined(CONFIG_DDR_QBOOT)
 	void (*ddr_load_DMEM)(u16 *msg_blk, ddrphy_qb_state *qb_state);
 	void (*acsm_sram_restore)(ddrphy_qb_state *qb_state);
-#endif
 };
 
 extern struct ddr_phy_ops phy_ops;
 
-#if defined(CONFIG_DDR_QBOOT)
 int ddr_cfg_phy_qb(struct dram_timing_info *timing_info, int fsp_id);
-u32 ddr_get_qb_state_addr(void);
-#else
 void ddrphy_qb_save(void);
-#endif
+
+/**
+ * Get training data location within the boot container.
+ * Location will be stored at the address specified by "offset" parameter.
+ *
+ * @param offset  pointer to the address the location to be stored
+ * @return	  ROM_API_OKAY=0xF0 if call succeeded,
+ *		  any other value if call fails
+ */
+u32 get_training_data_offset(u32 *offset);
+
+/**
+ * Checks if loaded training data is valid and can be used
+ * for quick boot flow.
+ *
+ * @return	true if training data is valid, false otherwise
+ */
+bool ddr_training_data_check(void);
+
 #endif

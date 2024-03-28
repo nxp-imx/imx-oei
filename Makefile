@@ -132,6 +132,5 @@ help :
 	@/bin/echo -e "\tboard=mx95lp5/mx95lp4x/mx95lp4x-15"
 	@/bin/echo -e "\toei=ddr/tcm"
 	@/bin/echo -e "\tDEBUG=1"
-	@/bin/echo -e "\tQBOOT=yes"
 
 include ./makefiles/build_info.mak

@@ -6,7 +6,6 @@ usage()
 	echo "board:  eg. mx95lp5, mx95lp4x, mx95lp4x-15"
 	echo "oei:  eg. ddr, tcm"
 	echo "Optional: DEBUG=1"
-	echo "Optional: QBOOT=yes"
 	exit -1
 }
 

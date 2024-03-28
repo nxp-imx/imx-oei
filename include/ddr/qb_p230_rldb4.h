@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Copyright 2023 NXP
+ * Copyright 2023-2024 NXP
  */
 #ifndef QB_P230_RLDB4_H
 #define QB_P230_RLDB4_H

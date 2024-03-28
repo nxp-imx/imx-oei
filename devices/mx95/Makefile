@@ -4,4 +4,9 @@
 ##
 
 OBJS  += $(OUT)/soc_edma.o
+
+ifeq ($(OEI),ddr)
+OBJS  += $(OUT)/soc_ddr.o
+endif
+
 VPATH += devices/mx95/

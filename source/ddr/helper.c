@@ -11,7 +11,6 @@
 
 extern char s_code_end[0];
 
-#if !defined(CONFIG_DDR_QBOOT)
 /**
  * Point the config ID to the position where the current register
  * (reg) is less or equal to the config register (cfg[id].reg)
@@ -35,21 +34,30 @@ static void check_cfg_id(struct dram_fsp_msg *fsp_msg, u32 reg, u32 *cfg_id, u16
 	*val = (id == cfg_num || reg < cfg[id].reg ? 0 : cfg[id].val);
 	*cfg_id = id;
 }
-#endif
 
 /**
- * Get the QuickBoot data address offset
+ * Get FW header offset as function of DDR FW type
+ *
+ * @fw_type: DDR FW type, either DDRFW_TRAINING or DDRFW_QUICKBOOT
+ * @return:  FW header offset
  */
-u32 ddr_get_qb_state_addr(void)
+static struct ddr_fw_header *ddr_get_fw_hdr(enum ddrfw_type fw_type)
 {
 	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&s_code_end);
 	u32 header_size = sizeof(struct ddr_fw_header);
 	u32 fw;
 
-	/* calculate the quick boot data address */
-	fw = (u32)&s_code_end + header_size + header->imem_size + header->dmem_size;
+	switch (fw_type) {
+	case DDRFW_QUICKBOOT:
+		fw     = (u32)(header) + header_size + header->imem_size + header->dmem_size;
+		header = (struct ddr_fw_header *)(fw);
+		break;
+	case DDRFW_TRAINING:
+	default:
+		break;
+	}
 
-	return fw;
+	return header;
 }
 
 /**
@@ -84,27 +92,26 @@ static void start_edma_transfer(enum mem_type type)
  * @fsp_msg: ddr fsp traing info
  * @type: memory type IMEM/DMEM
  */
-static void edma_ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_type type)
+static void edma_ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_type type, enum ddrfw_type fw_type)
 {
 	int ret;
 	u32 fw_num, edma_ch;
 	unsigned long fw, pr_to32;
-	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&s_code_end);
+	struct ddr_fw_header *header = ddr_get_fw_hdr(fw_type);
 	u32 header_size = sizeof(struct ddr_fw_header);
-#if !defined(CONFIG_DDR_QBOOT)
+	bool training = (fw_type == DDRFW_TRAINING);
 	u16 val;
 	u32 i, cfg_id;
-#endif
 
 	switch (type) {
 	case IMEM:
-		fw      = (unsigned long)&s_code_end + header_size;
+		fw      = (unsigned long)header + header_size;
 		fw_num  = header->imem_size;
 		pr_to32 = IMEM_OFFSET_ADDR;
 		edma_ch = EDMA_CH0;
 		break;
 	case DMEM:
-		fw      = (unsigned long)&s_code_end + header_size + header->imem_size;
+		fw      = (unsigned long)header + header_size + header->imem_size;
 		fw_num  = header->dmem_size;
 		pr_to32 = DMEM_OFFSET_ADDR;
 		edma_ch = EDMA_CH1;
@@ -114,9 +121,8 @@ static void edma_ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_
 		return;
 	}
 
-#if !defined(CONFIG_DDR_QBOOT)
 	i = 0;
-	if (type == DMEM && fsp_msg != NULL && fsp_msg->fsp_phy_msgh_cfg != NULL) {
+	if (training && type == DMEM && fsp_msg != NULL && fsp_msg->fsp_phy_msgh_cfg != NULL) {
 		cfg_id = 0;
 		for ( ; i < DDRPHY_QB_MSB_SIZE; i++, pr_to32++) {
 			check_cfg_id(fsp_msg, pr_to32, &cfg_id, &val);
@@ -126,7 +132,6 @@ static void edma_ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_
 	}
 
 	fw_num = fw_num - (i * sizeof(u16));
-#endif
 	edma_ops.en_master_rep(EDMA2_BASE_ADDR, edma_ch);
 	edma_ops.set_tbytes(EDMA2_BASE_ADDR, edma_ch, 2, 2);
 	ret = edma_ops.configure(EDMA2_BASE_ADDR, edma_ch, fw, 2,
@@ -135,7 +140,6 @@ static void edma_ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_
 		edma_ops.clr_tcd(EDMA2_BASE_ADDR, edma_ch);
 }
 
-#if defined(CONFIG_DDR_QBOOT)
 /**
  * Load QuickBoot DMEM memory blocks.
  *
@@ -145,12 +149,12 @@ static void edma_ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_
 static void edma_ddr_load_DMEM(u16 *msg_blk, ddrphy_qb_state *qb_state)
 {
 	int ret;
-	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&s_code_end);
+	struct ddr_fw_header *header = ddr_get_fw_hdr(DDRFW_QUICKBOOT);
 	u32 header_size = sizeof(struct ddr_fw_header);
 	unsigned long fw, pr_to32;
 	u32 fw_num, msg_blk_size, csr_size;
 
-	fw      = (unsigned long)&s_code_end + header_size + header->imem_size;
+	fw      = (unsigned long)(header) + header_size + header->imem_size;
 	fw_num  = header->dmem_size;
 	pr_to32 = DMEM_OFFSET_ADDR;
 	msg_blk_size = (DDRPHY_QB_MSB_SIZE * sizeof(u16));
@@ -219,7 +223,6 @@ static void edma_acsm_sram_restore(ddrphy_qb_state *qb_state)
 	edma_ops.check_edma(EDMA2_BASE_ADDR, EDMA_CH0);
 	edma_ops.wait_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
 }
-#endif
 
 void ddr_cfg_save(struct dram_timing_info *dtiming)
 {
@@ -310,8 +313,6 @@ struct ddr_phy_ops phy_ops = {
 	.ddr_pre_load_firmware = edma_ddr_load_train_firmware,
 	.ddr_do_load_firmware = start_edma_transfer,
 	.ddr_post_load_firmware = wait_edma_transfer,
-#if defined(CONFIG_DDR_QBOOT)
 	.ddr_load_DMEM = edma_ddr_load_DMEM,
 	.acsm_sram_restore = edma_acsm_sram_restore,
-#endif
 };
