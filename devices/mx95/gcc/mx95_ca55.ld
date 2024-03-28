@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Copyright 2023 NXP
+ * Copyright 2023-2024 NXP
  */
 
 /**
@@ -35,6 +35,6 @@ SECTIONS
 
 	.end : {
 		. = ALIGN(8);
-		*(.__end)
+		s_code_end = .;
 	} > s_code
 }

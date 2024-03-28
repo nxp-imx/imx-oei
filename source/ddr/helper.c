@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2018 NXP
+ * Copyright 2018, 2023-2024 NXP
  */
 #include <asm/io.h>
 #include <errno.h>
 #include "ddr.h"
 #include "ddr_retention.h"
 
-static char _end[0] __attribute__((section(".__end")));
+extern char s_code_end[0];
 
 #if !defined(CONFIG_DDR_QBOOT)
 static void check_cfg_id(struct dram_fsp_msg *fsp_msg, u32 reg, u32 *cfg_id, u16 *val)
@@ -37,11 +37,11 @@ struct ddr_fw_header {
 
 u32 ddr_get_qb_state_addr(void)
 {
-	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&_end);
+	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&s_code_end);
 	u32 header_size = sizeof(struct ddr_fw_header);
 	u32 fw;
 
-	fw = (u32)&_end + header_size + header->imem_size + header->dmem_size;
+	fw = (u32)&s_code_end + header_size + header->imem_size + header->dmem_size;
 
 	return fw;
 }
@@ -51,7 +51,7 @@ void ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_type type)
 	u16 val;
 	u32 fw_num, i;
 	unsigned long fw, pr_to32;
-	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&_end);
+	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&s_code_end);
 	u32 header_size = sizeof(struct ddr_fw_header);
 #if !defined(CONFIG_DDR_QBOOT)
 	u32 cfg_id;
@@ -59,12 +59,12 @@ void ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_type type)
 
 	switch (type) {
 	case IMEM:
-		fw      = (unsigned long)&_end + header_size;
+		fw      = (unsigned long)&s_code_end + header_size;
 		fw_num  = header->imem_size / sizeof(val);
 		pr_to32 = IMEM_OFFSET_ADDR;
 		break;
 	case DMEM:
-		fw      = (unsigned long)&_end + header_size + header->imem_size;
+		fw      = (unsigned long)&s_code_end + header_size + header->imem_size;
 		fw_num  = header->dmem_size / sizeof(val);
 		pr_to32 = DMEM_OFFSET_ADDR;
 		break;
@@ -94,13 +94,13 @@ void ddr_load_train_firmware(struct dram_fsp_msg *fsp_msg, enum mem_type type)
 #if defined(CONFIG_DDR_QBOOT)
 void ddr_load_DMEM(u16 *msg_blk, ddrphy_qb_state *qb_state)
 {
-	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&_end);
+	struct ddr_fw_header *header = (struct ddr_fw_header *)((void *)&s_code_end);
 	u32 header_size = sizeof(struct ddr_fw_header);
 	unsigned long fw, pr_to32;
 	u32 fw_num, i, j;
 	u16 val;
 
-	fw      = (unsigned long)&_end + header_size + header->imem_size;
+	fw      = (unsigned long)&s_code_end + header_size + header->imem_size;
 	fw_num  = header->dmem_size / sizeof(val);
 	pr_to32 = DMEM_OFFSET_ADDR;
 
