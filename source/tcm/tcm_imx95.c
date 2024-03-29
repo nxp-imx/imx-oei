@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2023 NXP
+ * Copyright 2023-2024 NXP
  */
 #include <asm/arch/ccm_regs.h>
 #include <asm/arch/clock.h>

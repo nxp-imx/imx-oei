@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2022 NXP
+ * Copyright 2022-2023 NXP
  */
 #include <asm/arch/soc_memory_map.h>
 #include <asm/arch/clock.h>
