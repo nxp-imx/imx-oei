@@ -27,6 +27,20 @@ void power_up_m7mix(void)
 	}
 }
 
+void power_down_m7mix(void)
+{
+	/* power down m7 mix */
+	if (*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL == 0) {
+		*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL |= SW_CTRL_PDN_SOFT_MASK;
+		while (!*(volatile unsigned int *)SRC_M7MIX_SLICE_FUNC_STAT & 0x1);
+	}
+}
+
+void tcm_retention(void)
+{
+	*(volatile unsigned int *)SRC_M7MIX_SLICE_MEM_CTRL |= MEM_CTRL_LP_MODE_MASK;
+}
+
 static int tcm_init_by_dma(void)
 {
 	int ret = -1;
@@ -59,7 +73,9 @@ static int tcm_init_by_dma(void)
 
 exit:
 	edma_ops.clr_tcd(EDMA2_BASE_ADDR, EDMA_CH0);
-	
+	tcm_retention();
+	power_down_m7mix();
+
 	return ret;
 }
 
