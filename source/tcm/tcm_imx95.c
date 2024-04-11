@@ -18,26 +18,63 @@ typedef struct
 	unsigned int end_addr;
 } mem_tbl;
 
-void power_up_m7mix(void)
+
+/**
+ * Checks and powers up M7MIX.
+ *
+ * CM33/CA55 bootrom powers up M7 mix when container image
+ * includes M7 firmware to be loaded in M7 TCM. In such case
+ * M7 TCM is zeroed, but M7MIX power must remain on.
+ *
+ * @return true if M7MIX was powered-up by OEI,
+ *         false if M7MIX was already powered-up by ROM
+ */
+static bool power_up_m7mix(void)
 {
-	/* Do we need power up m7 mix? actually cm33 bootrom/ca55 bootrom will power up m7 mix when contaimer image include m7 firmware */
 	if (*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL != 0) {
 		*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL = 0U;
 		while (*(volatile unsigned int *)SRC_M7MIX_SLICE_FUNC_STAT & 0x10);
+
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Checks and powers down M7MIX
+ */
+static void power_down_m7mix(void)
+{
+	if (*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL == 0) {
+		*(volatile unsigned int *)SRC_M7MIX_SLICE_SW_CTRL |= SW_CTRL_PDN_SOFT_MASK;
+		while (!*(volatile unsigned int *)SRC_M7MIX_SLICE_FUNC_STAT & 0x1);
 	}
 }
 
+/**
+ * Puts the M7 TCM in retention mode
+ */
+static void tcm_retention(void)
+{
+	*(volatile unsigned int *)SRC_M7MIX_SLICE_MEM_CTRL |= MEM_CTRL_LP_MODE_MASK;
+}
+
+/**
+ * Initialise the M7 TCM using EDMA
+ */
 static int tcm_init_by_dma(void)
 {
 	int ret = -1;
 	u32 i = 0;
+	bool pup;
 	mem_tbl tcm_tbl[] = {
-					{CM7_ITCM_START_ADDR, CM7_ITCM_END_ADDR},
-					{CM7_DTCM_START_ADDR, CM7_DTCM_END_ADDR}
-				};
+		{CM7_ITCM_START_ADDR, CM7_ITCM_END_ADDR},
+		{CM7_DTCM_START_ADDR, CM7_DTCM_END_ADDR}
+	};
 	unsigned int transfer_size = 0;
 
-	power_up_m7mix();
+	pup = power_up_m7mix();
 	for (i = 0; i < sizeof(tcm_tbl) / sizeof(mem_tbl); i++){
 		transfer_size = (tcm_tbl[i].end_addr - tcm_tbl[i].start_addr) + 1;
 		edma_ops.en_master_rep(EDMA2_BASE_ADDR, EDMA_CH0);
@@ -59,10 +96,20 @@ static int tcm_init_by_dma(void)
 
 exit:
 	edma_ops.clr_tcd(EDMA2_BASE_ADDR, EDMA_CH0);
-	
+
+	/* The M7MIX will be powered down if the M7MIX is powered up by OEI */
+	if (pup)
+	{
+		tcm_retention();
+		power_down_m7mix();
+	}
+
 	return ret;
 }
 
+/**
+ * TCM init wrapper for tcm_init_by_dma
+ */
 int tcm_init(void)
 {
 	return tcm_init_by_dma();
