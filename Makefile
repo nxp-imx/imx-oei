@@ -129,7 +129,7 @@ help :
 	@/bin/echo -e "\tclean          : remove all build files"
 	@/bin/echo -e "\treally-clean   : remove build directory\n"
 	@/bin/echo -e "\nOptions:"
-	@/bin/echo -e "\tboard=mx95lp5/mx95lp4x"
+	@/bin/echo -e "\tboard=mx95lp5/mx95lp4x/mx95lp4x-15"
 	@/bin/echo -e "\toei=ddr/tcm"
 	@/bin/echo -e "\tDEBUG=1"
 	@/bin/echo -e "\tQBOOT=yes"

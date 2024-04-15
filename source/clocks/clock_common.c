@@ -29,6 +29,7 @@ struct imx_fracpll_rate_table imx9_fracpll_tbl[] = {
 	FRAC_PLL_RATE(700000000U, 1, 145, 5, 5, 6), /* 700Mhz */
 	FRAC_PLL_RATE(600000000U, 1, 200, 8, 0, 1), /* 600Mhz */
 	FRAC_PLL_RATE(533333333U, 1, 133, 6, 1, 3), /* 533.(3)Mhz */
+	FRAC_PLL_RATE(500000000U, 1, 166, 8, 2, 3), /* 500Mhz */
 	FRAC_PLL_RATE(484000000U, 1, 121, 6, 0, 1),
 	FRAC_PLL_RATE(466666666U, 1, 155, 8, 5, 9), /* 466.(6)Mhz */
 	FRAC_PLL_RATE(466000000U, 1, 155, 8, 1, 3), /* 466.(0)Mhz */

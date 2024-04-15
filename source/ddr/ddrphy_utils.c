@@ -107,6 +107,10 @@ void ddrphy_init_set_dfi_clk(unsigned int drate)
 		dram_pll_init(533333333);
 		dram_disable_bypass();
 		break;
+	case 4000:
+		dram_pll_init(MHZ(500));
+		dram_disable_bypass();
+		break;
 	case 3733: /* Assume 3733.(3) */
 		dram_pll_init(466666666);
 		dram_disable_bypass();
