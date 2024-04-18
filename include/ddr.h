@@ -59,7 +59,7 @@
 #define GATE_DDRPHY_APBCLK	BIT(30)
 
 /** Nr of cycles for SSI being idle before DDRC clock gating */
-#define SSI_IDLE_STRAP		0x200
+#define SSI_IDLE_STRAP		0x8000
 
 #define SR_FAST_WK_EN		BIT(1)
 
