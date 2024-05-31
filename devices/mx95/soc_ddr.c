@@ -59,8 +59,13 @@ u32 get_training_data_offset(u32 *offset)
 
 	boot_type = boot >> 16;
 	switch (boot_type) {
-		case BT_DEV_TYPE_SD:
 		case BT_DEV_TYPE_MMC:
+			if (boot & 1) {
+				(*offset) = 0;
+				break;
+			}
+			[[fallthrough]];
+		case BT_DEV_TYPE_SD:
 		case BT_DEV_TYPE_FLEXSPINOR:
 			ret = get_dev_offset(offset);
 			break;
