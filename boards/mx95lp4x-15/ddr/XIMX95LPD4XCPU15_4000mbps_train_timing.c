@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v3.3.0_3.6.
+ * Code generated with DDR Tool v3.3.0_4.2-d1cdb7d3.
  * DDR PHY FW2023.11
  */
 
@@ -29,7 +29,7 @@ static struct ddrc_cfg_param ddr_ddrc_cfg[] = {
     {0x5e080f00, 0x8},
     {0x5e080f04, 0x0},
     {0x5e080f64, 0x0},
-    {0x5e080800, 0x43b31002},
+    {0x5e080800, 0x43931002},
     {0x5e080804, 0x3f1f1f1f},
     {0x5e081000, 0x0},
     {0x5e081220, 0x0},
@@ -52,11 +52,11 @@ static struct ddrc_cfg_param ddr_ddrc_cfg[] = {
 
 /* DRAM fsp configurations */
 static struct ddrc_cfg_param ddr_dram_fsp0_ddrc_cfg[] = {
-    {0x5e080100, 0x25AF421B},
+    {0x5e080100, 0x25AF4211},
     {0x5e080104, 0xF8FF001C},
-    {0x5e080108, 0x44460434},
-    {0x5e08010C, 0x0015E1D0},
-    {0x5e080124, 0x1E8207A0},
+    {0x5e080108, 0x444604F4},
+    {0x5e08010C, 0x0015E1FC},
+    {0x5e080124, 0x1E800800},
     {0x5e080160, 0x00009102},
     {0x5e08016C, 0x35F00000},
     {0x5e080170, 0x8B0B0608},
@@ -65,8 +65,8 @@ static struct ddrc_cfg_param ddr_dram_fsp0_ddrc_cfg[] = {
     {0x5e080258, 0x00000008},
     {0x5e08025C, 0x00000400},
     {0x5e080300, 0x24542413},
-    {0x5e080304, 0x01742413},
-    {0x5e080308, 0x0A3C0F41},
+    {0x5e080304, 0x0174240F},
+    {0x5e080308, 0x0A3C0F40},
 };
 
 /* PHY Initialize Configuration */
@@ -6250,3 +6250,4 @@ struct dram_timing_info dram_timing = {
     .fsp_cfg = ddr_dram_fsp_cfg,
     .fsp_cfg_num = ARRAY_SIZE(ddr_dram_fsp_cfg),
 };
+
