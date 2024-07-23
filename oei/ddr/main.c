@@ -54,7 +54,7 @@ static uint32_t Ddr_Load_Training_Data(uint32_t offset)
 {
     void *dest = (void *)QB_STATE_LOAD_ADDR;
     uint32_t size, off = offset;
-    uint32_t lsize = sizeof(ddrphy_qb_state);
+    uint32_t lsize = QB_STATE_STORAGE_SIZE;
 
 #if (defined(DDR_NO_PHY))
     /** No need to load training data */
