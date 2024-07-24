@@ -54,7 +54,7 @@ static uint32_t Ddr_Load_Training_Data(uint32_t offset)
 {
     void *dest = (void *)QB_STATE_LOAD_ADDR;
     uint32_t size, off = offset;
-    uint32_t lsize = QB_STATE_STORAGE_SIZE;
+    uint32_t lsize;
 
 #if (defined(DDR_NO_PHY))
     /** No need to load training data */
@@ -66,6 +66,16 @@ static uint32_t Ddr_Load_Training_Data(uint32_t offset)
         return ROM_API_ERR_INV_PAR;
     }
 
+    /**
+     * For stream devices such as USB the stream must point
+     * to the following image body when OEI returns control to
+     * ROM, therefore the loaded data size must be the entire
+     * space allocated for DDR training data.
+     *
+     * For all other devices the optimal size of loaded data
+     * is the size of ddrphy_qb_state structure.
+     */
+    lsize = Rom_Api_Boot_Dev_Is_Stream() ? QB_STATE_STORAGE_SIZE : sizeof(ddrphy_qb_state);
     size = Rom_Api_Read(off, lsize, dest);
 
     return (size == lsize ? ROM_API_OKAY : ROM_API_ERR_INV_PAR);
