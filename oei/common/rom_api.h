@@ -5,6 +5,7 @@
 #ifndef __ROM_API_H
 #define __ROM_API_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 enum boot_device
@@ -119,5 +120,6 @@ struct rom_api_wrapper
 uint32_t Rom_Api_Query_Boot_Info(uint32_t info_type, uint32_t *info);
 void Rom_Api_Set_Ready(void);
 uint32_t Rom_Api_Read(uint32_t offset, uint32_t size, void *dest);
+bool Rom_Api_Boot_Dev_Is_Stream(void);
 
 #endif

@@ -49,3 +49,22 @@ uint32_t Rom_Api_Read(uint32_t offset, uint32_t size, void *dest)
 
     return (ret == ROM_API_OKAY ? size : 0);
 }
+
+bool Rom_Api_Boot_Dev_Is_Stream(void)
+{
+    uint32_t boot;
+    enum boot_dev_type boot_type;
+
+    Rom_Api_Set_Ready();
+    Rom_Api_Query_Boot_Info(QUERY_BT_DEV, &boot);
+
+    boot_type = boot >> 16;
+
+    if (boot_type == BT_DEV_TYPE_MMC && (boot & 1))
+        return true;
+
+    if (boot_type >= BT_DEV_TYPE_USB && boot_type != BT_DEV_TYPE_INVALID)
+        return true;
+
+    return false;
+}
