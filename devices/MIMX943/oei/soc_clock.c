@@ -97,7 +97,7 @@ void Dram_Disable_Bypass(void)
 	(void) CCM_GprValSet(2, CCM_GPR_SHARED2_DRAM_PLL_BYPASS_MASK, 0);
 }
 
-void Dram_Enable_Bypass(void)
+void Dram_Enable_Bypass(uint64_t clk_val)
 {
 	printf("Not support dram bypass enable\n");
 }
