@@ -30,13 +30,11 @@
 ##
 ## ###################################################################
 
-OEI_VERSION = imx_oei_2023q4_er1
+OEI_VERSION = imx_oei_2024q3
 OEI_PREV_VER = None
 
-OEI_DEVICES = i.MX95 (A0)
-
 MKIMAGE_BRANCH = master
-MKIMAGE_BUILD = Linux_IMX_Core
+MKIMAGE_BUILD = Linux_IMX_Trunk
 MKIMAGE_N = latest
 
 $(OUT)/build_info.h :
@@ -48,7 +46,8 @@ $(OUT)/build_info.h :
 	$(AT)/bin/echo '#define OEI_VERSION "$(OEI_VERSION)"' >> $@
 	$(AT)/bin/echo '#define OEI_PREV_VER "$(OEI_PREV_VER)"' >> $@
 	$(AT)/bin/echo '' >> $@
-	$(AT)/bin/echo '#define OEI_DEVICES "$(OEI_DEVICES)"' >> $@
+	$(AT)/bin/echo '#define OEI_DEVICES "$(SOC)($(REV))"' >> $@
+	$(AT)/bin/echo '#define OEI_BOARD "$(SOM)"' >> $@
 	$(AT)/bin/echo '' >> $@
 	$(AT)/bin/echo -n '#define OEI_BRANCH ' >> $@
 	$(AT)-git rev-parse --abbrev-ref HEAD >> $@
@@ -75,7 +74,7 @@ rn_info.sed :
 	$(AT)/bin/echo '' > $@
 	$(AT)/bin/echo "sed -i 's/\#OEI_VERSION/$(OEI_VERSION)/g' rn.md" >> $@
 	$(AT)/bin/echo "sed -i 's/\#OEI_PREV_VER/$(OEI_PREV_VER)/g' rn.md" >> $@
-	$(AT)/bin/echo "sed -i 's/\#OEI_DEVICES/$(OEI_DEVICES)/g' rn.md" >> $@
+	$(AT)/bin/echo "sed -i 's/\#OEI_DEVICES/$(SOC)($(REV))/g' rn.md" >> $@
 	$(AT)/bin/echo -n "sed -i 's/\#OEI_BRANCH/" >> $@
 	$(AT)-git rev-parse --abbrev-ref HEAD >> $@
 	$(AT)-perl -pi -e 'chomp if eof' $@

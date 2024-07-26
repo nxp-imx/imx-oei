@@ -33,9 +33,9 @@ int oei_main(uint32_t argc, uint32_t *argv)
 
 #ifdef DEBUG
 	te = SYSCTR_GetUsec64() - ts;
-	printf("TCM INIT: %u us\n", (uint32_t)te);
+	printf("TCM OEI: INIT complete in %u us\n", (uint32_t)te);
 #endif
-	printf("\n\nTCM OEI: end ret = 0x%x\n", ret);
+	printf("TCM OEI: done, err = 0x%x\n", ret);
 
 	return ret;
 }
