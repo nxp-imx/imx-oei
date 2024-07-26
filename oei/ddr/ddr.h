@@ -8,7 +8,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include  "fsl_device_registers.h"
+#include "fsl_device_registers.h"
+
+#if !defined(ARRAY_SIZE)
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#endif
 
 #define IP2APB_DDRPHY_IPS_BASE_ADDR(X) (DDR_PHY_BASE + (X * 0x2000000))
 #define DDRPHY_MEM(X)                  (DDR_PHY_BASE + (X * 0x2000000) + 0x50000)

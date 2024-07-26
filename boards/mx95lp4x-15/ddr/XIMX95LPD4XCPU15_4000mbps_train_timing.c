@@ -7,7 +7,6 @@
  * DDR PHY FW2023.11
  */
 
-#include "oei.h"
 #include "ddr.h"
 
 /* Initialize DDRC registers */

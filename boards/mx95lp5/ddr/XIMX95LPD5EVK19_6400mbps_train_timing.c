@@ -8,7 +8,6 @@
  */
 
 #include "ddr.h"
-#include "oei.h"
 
 /* Initialize DDRC registers */
 static struct ddrc_cfg_param ddr_ddrc_cfg[] = {

@@ -40,21 +40,7 @@
 /*! Macro for writing register value */
 #define Write32(a,v)  (*(volatile uint32_t *)(a) = (v))
 #define Write16(a,v)  (*(volatile uint16_t *)(a) = (v))
-
 /** @} */
-/*! @brief Computes the number of elements in an array. */
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-#endif
-
-#if !defined(MAX)
-/*! Macro to find the max of two values */
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#endif
-
-#if !defined(BIT)
-#define BIT(nr) (1U << (nr))
-#endif
 
 #if !defined(DEBUG)
 #define printf(...)

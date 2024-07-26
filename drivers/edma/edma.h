@@ -7,7 +7,10 @@
 #define __EDMA_H
 
 #include <stdint.h>
-#include <oei.h>
+
+#if !defined(BIT)
+#define BIT(nr) (1U << (nr))
+#endif
 
 #define EDMA_CH(ch) (ch)
 #define EDMA_CH0 0
