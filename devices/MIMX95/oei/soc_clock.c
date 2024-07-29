@@ -84,7 +84,7 @@ void Dram_PLL_Init(uint64_t pll_val)
 		}
 	}
 
-	printf("Failed to set dram pll %lu\n", pll_val);
+	printf("Failed to set dram pll %llu\n", pll_val);
 }
 
 void Dram_Disable_Bypass(void)
