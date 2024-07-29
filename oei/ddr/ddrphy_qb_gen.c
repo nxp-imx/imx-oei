@@ -107,10 +107,12 @@ void Ddr_Phy_Qb_Save(void)
      * if there is more than 2 PState. Psuedo code provide to save
      * PState SRAM as follows, where PSTATE_SRAM_BASE_ADDR is 0xA0000
      */
+#if (DDRPHY_QB_PST_SIZE > 0)
     for (i = 0, addr = PSTATE_SRAM_BASE_ADDR; i < DDRPHY_QB_PST_SIZE; i++, addr++)
     {
         qb_state->pst[i] = Dwc_Ddrphy_Apb_Rd(addr);
     }
+#endif
 
     /* restore mux */
     Dwc_Ddrphy_Apb_Wr(0xc0080, ucc);
