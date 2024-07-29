@@ -494,9 +494,6 @@ static inline status_t EnableIRQ(IRQn_Type interrupt)
 {
     status_t status = kStatus_Success;
 
-    /* For OEI specific */
-    return status;
-
     if (NotAvail_IRQn == interrupt)
     {
         status = kStatus_Fail;
