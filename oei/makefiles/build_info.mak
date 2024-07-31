@@ -36,6 +36,7 @@ OEI_PREV_VER = None
 MKIMAGE_BRANCH = master
 MKIMAGE_BUILD = Linux_IMX_Trunk
 MKIMAGE_N = latest
+GIT_EXISTS=$(shell (git rev-parse --show-cdup 2>/dev/null) && echo 1 || echo 0)
 
 $(OUT)/build_info.h :
 	@echo "Generating $@"
@@ -49,6 +50,11 @@ $(OUT)/build_info.h :
 	$(AT)/bin/echo '#define OEI_DEVICES "$(SOC)($(REV))"' >> $@
 	$(AT)/bin/echo '#define OEI_BOARD "$(SOM)"' >> $@
 	$(AT)/bin/echo '' >> $@
+ifeq (0,$(GIT_EXISTS))
+	$(AT)/bin/echo '#define OEI_BRANCH Unknown' >> $@
+	$(AT)/bin/echo '#define OEI_BUILD 0UL' >> $@
+	$(AT)/bin/echo '#define OEI_COMMIT 0x0UL' >> $@
+else
 	$(AT)/bin/echo -n '#define OEI_BRANCH ' >> $@
 	$(AT)-git rev-parse --abbrev-ref HEAD >> $@
 	$(AT)-perl -pi -e 'chomp if eof' $@
@@ -61,6 +67,7 @@ $(OUT)/build_info.h :
 	$(AT)-git rev-parse --short=8 HEAD >> $@
 	$(AT)-perl -pi -e 'chomp if eof' $@
 	$(AT)/bin/echo 'UL' >> $@
+endif
 	$(AT)date +'#define OEI_DATE "%b %d %C%y"' >> $@
 	$(AT)date +'#define OEI_TIME "%T"' >> $@
 	$(AT)/bin/echo '' >> $@
