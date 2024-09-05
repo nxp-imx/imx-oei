@@ -36,7 +36,6 @@ void Ddr_Phy_Qb_Save(void)
     mux = Dwc_Ddrphy_Apb_Rd(0xd0000);
     ucc = Dwc_Ddrphy_Apb_Rd(0xc0080);
     SystemTimeDelay(1);
-    SYSCTR_TimeDelay(1);
     Dwc_Ddrphy_Apb_Wr(0xd0000, 0x0);
     Dwc_Ddrphy_Apb_Wr(0xc0080, 0x3);
 
