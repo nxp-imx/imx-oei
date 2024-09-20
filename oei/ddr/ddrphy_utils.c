@@ -3,7 +3,10 @@
  * Copyright 2018, 2023-2024 NXP
  */
 
+#include <stdio.h>
 #include <stdbool.h>
+
+#include "oei.h"
 #include "clock.h"
 #include "ddr.h"
 
@@ -111,7 +114,7 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
         Dram_Disable_Bypass();
         break;
     case 4266: /* Assume 4266.(6) */
-        Dram_PLL_Init(533333333);
+        Dram_PLL_Init(533333000);
         Dram_Disable_Bypass();
         break;
     case 4000:
@@ -178,6 +181,7 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
         Dram_Enable_Bypass(MHZ(100));
         break;
     default:
+        printf("Clk rate not found\n");
         return;
     }
 }
