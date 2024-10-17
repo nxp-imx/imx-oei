@@ -114,7 +114,7 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
         Dram_Disable_Bypass();
         break;
     case 4266: /* Assume 4266 */
-        Dram_PLL_Init(533333000);
+        Dram_PLL_Init(533250000);
         Dram_Disable_Bypass();
         break;
     case 4000:
@@ -122,7 +122,15 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
         Dram_Disable_Bypass();
         break;
     case 3733: /* Assume 3733 */
-        Dram_PLL_Init(466666000);
+        Dram_PLL_Init(466625000);
+        Dram_Disable_Bypass();
+        break;
+    case 3200:
+        Dram_PLL_Init(400000000);
+        Dram_Disable_Bypass();
+        break;
+    case 1866: /* Assume 1866 */
+        Dram_PLL_Init(233250000);
         Dram_Disable_Bypass();
         break;
     default:
