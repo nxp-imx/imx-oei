@@ -66,7 +66,6 @@ struct fracpll_rate_table fracpll_tbl[] = {
 	{ 3732000000ULL, 233250000ULL },
 };
 
-#define ENABLE_SSC 0
 void Dram_PLL_Init(uint64_t pll_val)
 {
 	unsigned int i = 0;
@@ -80,7 +79,7 @@ void Dram_PLL_Init(uint64_t pll_val)
 		tbl = &fracpll_tbl[i];
 		if (tbl->rate == pll_val) {
 			uint64_t t_rate;
-#if ENABLE_SSC
+#ifdef ENABLE_SSC
 			/* Configure Spread Spectrum Clocking to 0.5% spread, and 30kHz modFreq */
 			(void) CLOCK_SourceSetSsc(CLOCK_SRC_DRAMPLL_VCO, 5U, 30000U, 1U);
 #endif
