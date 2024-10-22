@@ -126,6 +126,32 @@ static void Ddr_PhyColdReset(void)
     SystemTimeDelay(8);
 }
 
+enum sdram_type Ddrc_Get_Sdram_Type(void)
+{
+    struct dram_timing_info *dtiming = &dram_timing;
+    uint32_t i, num = dtiming->ddrc_cfg_num, reg, ddr_dram_cfg;
+    struct ddrc_cfg_param *ddrc_cfg;
+    enum sdram_type type = SDRAM_LPDDR5; /* default value */
+
+    ddrc_cfg = dtiming->ddrc_cfg;
+    ddr_dram_cfg  = (uint32_t)&DDRC->DDR_SDRAM_CFG;
+    ddr_dram_cfg &= ~(1U << 28U); /* Clean (S) bit */
+
+    /* Get SDRAM type from DDRC timing config */
+    for (i = 0; i < num; i++, ddrc_cfg++)
+    {
+        reg = (ddrc_cfg->reg & ~(1U << 28U)); /* Clean (S) bit */
+        if (reg == ddr_dram_cfg)
+        {
+            type = (ddrc_cfg->val & DDRC_DDR_SDRAM_CFG_SDRAM_TYPE_MASK)
+                    >> DDRC_DDR_SDRAM_CFG_SDRAM_TYPE_SHIFT;
+            break;
+        }
+    }
+
+    return type;
+}
+
 int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
 {
     int ret = 0;

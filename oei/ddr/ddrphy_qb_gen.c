@@ -31,6 +31,7 @@ void Ddr_Phy_Qb_Save(void)
     int i;
     uint32_t addr, mux, ucc;
     ddrphy_qb_state *qb_state = (ddrphy_qb_state *) QB_STATE_SAVE_ADDR;
+    enum sdram_type type = Ddrc_Get_Sdram_Type();
 
     /* enable the ddrphy apb */
     mux = Dwc_Ddrphy_Apb_Rd(0xd0000);
@@ -40,42 +41,46 @@ void Ddr_Phy_Qb_Save(void)
     Dwc_Ddrphy_Apb_Wr(0xc0080, 0x3);
 
     /* Save trained values from Message Block area */
-#if defined(LPDDR4x)
-    qb_state->TrainedVREFCA_A0 = Ddr_Phy_Read_Mb_U8(0x4b);
-    qb_state->TrainedVREFCA_A1 = Ddr_Phy_Read_Mb_U8(0x4c);
-    qb_state->TrainedVREFCA_B0 = Ddr_Phy_Read_Mb_U8(0x7e);
-    qb_state->TrainedVREFCA_B1 = Ddr_Phy_Read_Mb_U8(0x7f);
+    switch (type) {
+    case SDRAM_LPDDR4x:
+        qb_state->TrainedVREFCA_A0 = Ddr_Phy_Read_Mb_U8(0x4b);
+        qb_state->TrainedVREFCA_A1 = Ddr_Phy_Read_Mb_U8(0x4c);
+        qb_state->TrainedVREFCA_B0 = Ddr_Phy_Read_Mb_U8(0x7e);
+        qb_state->TrainedVREFCA_B1 = Ddr_Phy_Read_Mb_U8(0x7f);
 
-    qb_state->TrainedVREFDQ_A0 = Ddr_Phy_Read_Mb_U8(0x4d);
-    qb_state->TrainedVREFDQ_A1 = Ddr_Phy_Read_Mb_U8(0x4e);
-    qb_state->TrainedVREFDQ_B0 = Ddr_Phy_Read_Mb_U8(0x80);
-    qb_state->TrainedVREFDQ_B1 = Ddr_Phy_Read_Mb_U8(0x81);
-#elif defined(LPDDR5)
-    qb_state->TrainedVREFCA_A0 = Ddr_Phy_Read_Mb_U8(0x33);
-    qb_state->TrainedVREFCA_A1 = Ddr_Phy_Read_Mb_U8(0x34);
-    qb_state->TrainedVREFCA_B0 = Ddr_Phy_Read_Mb_U8(0x4e);
-    qb_state->TrainedVREFCA_B1 = Ddr_Phy_Read_Mb_U8(0x4f);
+        qb_state->TrainedVREFDQ_A0 = Ddr_Phy_Read_Mb_U8(0x4d);
+        qb_state->TrainedVREFDQ_A1 = Ddr_Phy_Read_Mb_U8(0x4e);
+        qb_state->TrainedVREFDQ_B0 = Ddr_Phy_Read_Mb_U8(0x80);
+        qb_state->TrainedVREFDQ_B1 = Ddr_Phy_Read_Mb_U8(0x81);
+        break;
+    case SDRAM_LPDDR5:
+    default:
+        qb_state->TrainedVREFCA_A0 = Ddr_Phy_Read_Mb_U8(0x33);
+        qb_state->TrainedVREFCA_A1 = Ddr_Phy_Read_Mb_U8(0x34);
+        qb_state->TrainedVREFCA_B0 = Ddr_Phy_Read_Mb_U8(0x4e);
+        qb_state->TrainedVREFCA_B1 = Ddr_Phy_Read_Mb_U8(0x4f);
 
-    qb_state->TrainedVREFDQ_A0 = Ddr_Phy_Read_Mb_U8(0x35);
-    qb_state->TrainedVREFDQ_A1 = Ddr_Phy_Read_Mb_U8(0x36);
-    qb_state->TrainedVREFDQ_B0 = Ddr_Phy_Read_Mb_U8(0x50);
-    qb_state->TrainedVREFDQ_B1 = Ddr_Phy_Read_Mb_U8(0x51);
+        qb_state->TrainedVREFDQ_A0 = Ddr_Phy_Read_Mb_U8(0x35);
+        qb_state->TrainedVREFDQ_A1 = Ddr_Phy_Read_Mb_U8(0x36);
+        qb_state->TrainedVREFDQ_B0 = Ddr_Phy_Read_Mb_U8(0x50);
+        qb_state->TrainedVREFDQ_B1 = Ddr_Phy_Read_Mb_U8(0x51);
 
-    qb_state->TrainedVREFDQU_A0 = Ddr_Phy_Read_Mb_U8(0xd0);
-    qb_state->TrainedVREFDQU_A1 = Ddr_Phy_Read_Mb_U8(0xd5);
-    qb_state->TrainedVREFDQU_B0 = Ddr_Phy_Read_Mb_U8(0xda);
-    qb_state->TrainedVREFDQU_B1 = Ddr_Phy_Read_Mb_U8(0xdf);
+        qb_state->TrainedVREFDQU_A0 = Ddr_Phy_Read_Mb_U8(0xd0);
+        qb_state->TrainedVREFDQU_A1 = Ddr_Phy_Read_Mb_U8(0xd5);
+        qb_state->TrainedVREFDQU_B0 = Ddr_Phy_Read_Mb_U8(0xda);
+        qb_state->TrainedVREFDQU_B1 = Ddr_Phy_Read_Mb_U8(0xdf);
 
-    qb_state->TrainedDRAMDFE_A0 = Ddr_Phy_Read_Mb_U8(0xd1);
-    qb_state->TrainedDRAMDFE_A1 = Ddr_Phy_Read_Mb_U8(0xd6);
-    qb_state->TrainedDRAMDFE_B0 = Ddr_Phy_Read_Mb_U8(0xdb);
-    qb_state->TrainedDRAMDFE_B1 = Ddr_Phy_Read_Mb_U8(0xe0);
+        qb_state->TrainedDRAMDFE_A0 = Ddr_Phy_Read_Mb_U8(0xd1);
+        qb_state->TrainedDRAMDFE_A1 = Ddr_Phy_Read_Mb_U8(0xd6);
+        qb_state->TrainedDRAMDFE_B0 = Ddr_Phy_Read_Mb_U8(0xdb);
+        qb_state->TrainedDRAMDFE_B1 = Ddr_Phy_Read_Mb_U8(0xe0);
 
-    qb_state->TrainedDRAMDCA_A0 = Ddr_Phy_Read_Mb_U8(0xd2);
-    qb_state->TrainedDRAMDCA_A1 = Ddr_Phy_Read_Mb_U8(0xd7);
-    qb_state->TrainedDRAMDCA_B0 = Ddr_Phy_Read_Mb_U8(0xdc);
-    qb_state->TrainedDRAMDCA_B1 = Ddr_Phy_Read_Mb_U8(0xe1);
-#endif
+        qb_state->TrainedDRAMDCA_A0 = Ddr_Phy_Read_Mb_U8(0xd2);
+        qb_state->TrainedDRAMDCA_A1 = Ddr_Phy_Read_Mb_U8(0xd7);
+        qb_state->TrainedDRAMDCA_B0 = Ddr_Phy_Read_Mb_U8(0xdc);
+        qb_state->TrainedDRAMDCA_B1 = Ddr_Phy_Read_Mb_U8(0xe1);
+        break;
+    }
 
     qb_state->QBPllUPllProg0 = Dwc_Ddrphy_Apb_Rd(0x58098);
     qb_state->QBPllUPllProg1 = Dwc_Ddrphy_Apb_Rd(0x58099);
