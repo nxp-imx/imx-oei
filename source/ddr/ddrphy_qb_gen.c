@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright 2023,2024 NXP
+ * Copyright 2023, 2024 NXP
  */
 #include "crc.h"
 #include "ddr/qb_p230_rldb4.h"
