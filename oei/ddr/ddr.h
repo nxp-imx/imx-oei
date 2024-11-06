@@ -158,8 +158,8 @@ void Ddr_Phy_Trained_Csr_Save(void);
     *(uint32_t volatile *)(IP2APB_DDRPHY_IPS_BASE_ADDR(0) + Ddrphy_AddrRemap(addr))
 
 /* Quick Boot related */
-#define DDRPHY_QB_CSR_SIZE    5168
-#define DDRPHY_QB_ACSM_SIZE    4 * 1024
+#define DDRPHY_QB_CSR_ARRAY_SIZE    5168
+#define DDRPHY_QB_ACSM_ARRAY_SIZE    4 * 1024
 #define DDRPHY_QB_MSB_SIZE    0x200
 
 /**
@@ -171,7 +171,7 @@ void Ddr_Phy_Trained_Csr_Save(void);
 #else
 #define DDRPHY_QB_PSTATES    0
 #endif
-#define DDRPHY_QB_PST_SIZE    DDRPHY_QB_PSTATES * 4 * 1024
+#define DDRPHY_QB_PST_ARRAY_SIZE    DDRPHY_QB_PSTATES * 4 * 1024
 
 #define ACSM_SRAM_BASE_ADDR    0x41000
 #define PSTATE_SRAM_BASE_ADDR    0xA0000
@@ -217,9 +217,9 @@ typedef struct
     uint16_t QBPllCtrl1;
     uint16_t QBPllCtrl4;
     uint16_t QBPllCtrl5;
-    uint16_t csr[DDRPHY_QB_CSR_SIZE];
-    uint16_t acsm[DDRPHY_QB_ACSM_SIZE];
-    uint16_t pst[DDRPHY_QB_PST_SIZE];
+    uint16_t csr[DDRPHY_QB_CSR_ARRAY_SIZE];
+    uint16_t acsm[DDRPHY_QB_ACSM_ARRAY_SIZE];
+    uint16_t pst[DDRPHY_QB_PST_ARRAY_SIZE];
 } ddrphy_qb_state;
 
 /**

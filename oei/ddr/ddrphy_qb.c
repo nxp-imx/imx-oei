@@ -132,13 +132,13 @@ static int ddrphy_qb_restore(uint16_t *mb, struct dram_fsp_msg *fsp_msg, ddrphy_
     return 0;
 }
 
-#if (DDRPHY_QB_PST_SIZE > 0)
+#if (DDRPHY_QB_PST_ARRAY_SIZE > 0)
 static void ddrphy_qb_pstate_sram_restore(ddrphy_qb_state *qb_state)
 {
 	int i;
 	uint32_t to_addr;
 
-	for (i = 0, to_addr = PSTATE_SRAM_BASE_ADDR; i < DDRPHY_QB_PST_SIZE; i++, to_addr++)
+	for (i = 0, to_addr = PSTATE_SRAM_BASE_ADDR; i < DDRPHY_QB_PST_ARRAY_SIZE; i++, to_addr++)
 		Dwc_Ddrphy_Apb_Wr(to_addr, qb_state->pst[i]);
 }
 #endif
@@ -225,13 +225,13 @@ int Ddr_Cfg_Phy_Qb(struct dram_timing_info *dtiming, int fsp_id)
 	printf("DDR OEI: ACSM SRAM restore in %u us\n", te);
 	ts = SYSCTR_GetUsec64();
 #endif
-#if (DDRPHY_QB_PST_SIZE > 0)
+#if (DDRPHY_QB_PST_ARRAY_SIZE > 0)
 	drphy_qb_pstate_sram_restore(qb_state);
 #ifdef DEBUG
 	te = SYSCTR_GetUsec64() - ts;
 	printf("DDR OEI: PSTATE SRAM restore in %u us\n", te);
 #endif /* DEBUG */
-#endif /* DDRPHY_QB_PST_SIZE > 0 */
+#endif /* DDRPHY_QB_PST_ARRAY_SIZE > 0 */
 	/** 3.2.8 Step I Configure PHY for Hardware */
 #if defined(PUB1_xx)
 	Dwc_Ddrphy_Apb_Wr(0xd00e7, 0x400);

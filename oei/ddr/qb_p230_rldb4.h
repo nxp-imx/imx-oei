@@ -14,7 +14,7 @@
  * to:   PUB230_REG_LIST_DBYTE4.txt
  * from: Synopsys quick boot FW 2023.11
  */
-static const uint32_t ddrphy_csr_cfg[DDRPHY_QB_CSR_SIZE] = {
+static const uint32_t ddrphy_csr_cfg[DDRPHY_QB_CSR_ARRAY_SIZE] = {
 	0x100a3,
 	0x10056,
 	0x100d9,

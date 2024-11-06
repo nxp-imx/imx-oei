@@ -167,7 +167,7 @@ static void Edma_Ddr_Load_DMEM(uint16_t *msg_blk, ddrphy_qb_state *qb_state)
     fw_num  = header->dmem_size;
     pr_to32 = DMEM_OFFSET_ADDR;
     msg_blk_size = (DDRPHY_QB_MSB_SIZE * sizeof(uint16_t));
-    csr_size = (DDRPHY_QB_CSR_SIZE * sizeof(uint16_t));
+    csr_size = (DDRPHY_QB_CSR_ARRAY_SIZE * sizeof(uint16_t));
     fw += msg_blk_size + csr_size;
     fw_num = fw_num - (msg_blk_size + csr_size);
 
@@ -194,7 +194,7 @@ static void Edma_Ddr_Load_DMEM(uint16_t *msg_blk, ddrphy_qb_state *qb_state)
     edma_ops.start_transfer(EDMA2_BASE_ADDR, EDMA_CH1);
     edma_ops.check_edma(EDMA2_BASE_ADDR, EDMA_CH1);
     edma_ops.wait_transfer(EDMA2_BASE_ADDR, EDMA_CH1);
-    pr_to32 += DDRPHY_QB_CSR_SIZE;
+    pr_to32 += DDRPHY_QB_CSR_ARRAY_SIZE;
 
     /* transfer the remaining DMEM memory blocks */
     ret = edma_ops.configure(EDMA2_BASE_ADDR, EDMA_CH1, fw, 2,
@@ -219,7 +219,8 @@ static void Edma_Acsm_Sram_Restore(ddrphy_qb_state *qb_state)
 
     edma_ops.set_tbytes(EDMA2_BASE_ADDR, EDMA_CH0 , 2, 2);
     ret = edma_ops.configure(EDMA2_BASE_ADDR, EDMA_CH0, (unsigned int)&(qb_state->acsm[0]) , 2,
-              DDR_PHY_BASE + Ddrphy_AddrRemap(ACSM_SRAM_BASE_ADDR), 4, DDRPHY_QB_ACSM_SIZE, 1);
+              DDR_PHY_BASE + Ddrphy_AddrRemap(ACSM_SRAM_BASE_ADDR), 4,
+              DDRPHY_QB_ACSM_ARRAY_SIZE * sizeof(uint16_t), 1);
     if (ret != 0)
     {
         printf("Failed to set edma - error %d\n", ret);
