@@ -42,24 +42,18 @@ Also ensure the Linux installation is up-to-date and then install:
 Compiling an OEI Image
 =====================
 
-To get started with the OEI on an NXP iMX95 EVK LP5 board, download the [GitHub](https://github.com/nxp-imx/imx-oei)
-repository and then compile the OEI for the target configuration.
-
 For example to build DDR OEI, in the top directory of the code base (e.g. imx-oei):
 
-    make board=mx95lp5 oei=ddr DEBUG=1
+    make board=mx95libra oei=ddr DEBUG=1
 
-Copy the resulting binary image file, *build/mx95lp5/ddr/oei-m33-ddr.bin*, to the iMX95 directory of the
+Copy the resulting binary image file, *build/mx95libra/ddr/oei-m33-ddr.bin*, to the iMX95 directory of the
 [mkimage tool](https://github.com/nxp-imx/imx-mkimage).
 
 Similarly, to build TCM init OEI, in the top directory of the code base (e.g. imx-oei):
 
-    make board=mx95lp5 oei=tcm DEBUG=1
+    make board=mx95libra oei=tcm DEBUG=1
 
-Then copy the resulting binary image file, *build/mx95lp5/tcm/oei-m33-tcm.bin*, to the iMX95 directory of the
+Then copy the resulting binary image file, *build/mx95libra/tcm/oei-m33-tcm.bin*, to the iMX95 directory of the
 [mkimage tool](https://github.com/nxp-imx/imx-mkimage). Build a boot container using mkimage, program
 it to the boot device, and boot the board. The OEI will display debug messages on the M33 debug
-UART of i.MX95 19x19 EVK.
-
-Customers will usually create their own board port that configures the DDR on their board.
-
+UART.
