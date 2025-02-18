@@ -46,16 +46,14 @@ LFLAGS += -flto
 FLAGS  += -flto
 endif
 
-# Configure toolchain
-OEI_CROSS_COMPILE ?= $(TOOLS)/arm-gnu-toolchain-*-none-eabi/bin/arm-none-eabi-
 ARCHFLAGS = -mcpu=cortex-$(cpu) -mthumb -mfloat-abi=soft
 
 cc = gcc
-CC = $(OEI_CROSS_COMPILE)$(cc)
-LD = $(OEI_CROSS_COMPILE)$(cc)
-OBJCOPY = $(OEI_CROSS_COMPILE)objcopy
-OBJDUMP = $(OEI_CROSS_COMPILE)objdump
-SIZE = $(OEI_CROSS_COMPILE)size
+CC = $(CROSS_COMPILE)$(cc)
+LD = $(CROSS_COMPILE)$(cc)
+OBJCOPY = $(CROSS_COMPILE)objcopy
+OBJDUMP = $(CROSS_COMPILE)objdump
+SIZE = $(CROSS_COMPILE)size
 FLAGS += -DCPU_$(SOCFULL)_c$(cpu) -D$(SOC)
 
 # Configure linker control file
@@ -76,7 +74,7 @@ FLAGS += ${WARNS}
 # DEPENDENCY GENERATION
 # -MMD = generate dependency files for non-system headers
 #
-# OPTIMIZATION 
+# OPTIMIZATION
 # -O3 = optimzation level
 # -ffunction-sections = place each function in its own section (allows removal during link phase using --gc-sections)
 # -fdata-sections = place each data item in its own section (allows removal during link phase using --gc-sections)
@@ -107,6 +105,6 @@ CFLAGS = $(ARCHFLAGS) $(FLAGS) -MMD -O3 -ffunction-sections -fdata-sections -g -
 # -Wl,--gc-sections = linker garbage collection (allows function/data section removal during link phase)
 # -Wl,-Map = specifies map output file
 # -T = specifies linker script
-# 
+#
 #################################
 LFLAGS 	+= $(ARCHFLAGS) -Wl,--gc-sections -Wl,-Map=$(OUT)/$(IMG).map -nostdlib -lgcc $(LIB) -nodefaultlibs -Wl,--no-warn-rwx-segments -T$(SOC_DEVICE_DIR)/gcc/$(LCF).ld

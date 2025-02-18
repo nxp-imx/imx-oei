@@ -1,4 +1,4 @@
-The Optional Executable Image (OEI) is an optional plugin loaded and executed by Cortex-M processor 
+The Optional Executable Image (OEI) is an optional plugin loaded and executed by Cortex-M processor
 ROM on many NXP i.MX processors. The Cortex-M is the boot core, runs the boot ROM which loads the OEI, and then
 branches to the OEI. The OEI then configures some aspects of the hardware such as DDR config, init TCM ECC, etc.
 There could be multiple OEI images in the boot container. After execution of OEI, the processor returns
@@ -24,13 +24,13 @@ Installing the Toolchain
 Compiling requires an ARM cross-compiler. Download and install the required arm-none-eabi toolchain from
 the [Arm GNU Toolchain Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
 website. For example, from the x86_64 Linux hosted cross toolchains AArch32 bare-metal target
-(arm-none-eabi) section, download the *.xz file to a directory for the tool chain (e.g. tools) and then:
+(arm-none-eabi) section, download the *.xz file to a directory for the tool chain and then:
 
     tar xvf *.xz
 
-Set the TOOLS shell variable to the directory the toolchain is installed in. For example:
+Set the CROSS_COMPILE environment variable. For example:
 
-    export TOOLS=~/tools
+    export CROSS_COMPILE="ccache arm-none-eabi-"
 
 When the toolchain is in a directory like arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi in this
 *tools* directory.
