@@ -42,10 +42,6 @@
 #define Write16(a,v)  (*(volatile uint16_t *)(a) = (v))
 /** @} */
 
-#if !defined(DEBUG)
-#define printf(...)
-#endif
-
 /**
  * OEI main function
  *
