@@ -14,9 +14,11 @@ INCLUDE +=  \
 	-I$(BOARDS_DIR)  \
 	-I$(BOARD_DIR)
 
+ifeq ($(DEBUG),1)
 OBJS += \
 	$(OUT)/board.o  \
 	$(OUT)/pin_mux.o
+endif
 
 VPATH +=  \
 	$(BOARDS_DIR)  \

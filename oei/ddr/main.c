@@ -93,8 +93,10 @@ int oei_main(uint32_t argc, uint32_t *argv)
         timer_enable();
 
     Clock_Init();
+#ifdef DEBUG
     BOARD_InitPins();
     BOARD_InitDebugConsole();
+#endif
 
     printf("\nDDR OEI: (Build %lu, Commit %08lx, %s %s)\n\n",
         OEI_BUILD, OEI_COMMIT, OEI_DATE, OEI_TIME);

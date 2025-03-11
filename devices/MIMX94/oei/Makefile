@@ -46,10 +46,14 @@ SDK_OBJS = \
     $(OUT)/fsl_ccm.o  \
     $(OUT)/fsl_clock.o  \
     $(OUT)/fsl_fract_pll.o  \
-    $(OUT)/fsl_lpuart.o  \
     $(OUT)/fsl_power.o  \
     $(OUT)/fsl_src.o  \
     $(OUT)/fsl_sysctr.o
+
+ifeq ($(DEBUG),1)
+SDK_OBJS += \
+    $(OUT)/fsl_lpuart.o
+endif
 
 OBJS  +=  \
     $(OUT)/soc_clock.o  \
