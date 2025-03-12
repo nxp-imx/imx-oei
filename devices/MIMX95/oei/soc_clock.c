@@ -34,7 +34,7 @@ int clk_root_set_rate_enable(uint32_t id, uint32_t src, uint32_t div, bool enabl
 	(void) CCM_RootSetDiv(id, div);
 	(void) CCM_RootSetParent(id, src);
 	(void) CCM_RootSetEnable(id, enable);
-	
+
 	return 0;
 }
 
@@ -64,6 +64,7 @@ struct fracpll_rate_table fracpll_tbl[] = {
 	{ 4000000000ULL, 500000000ULL },
 	{ 3733000000ULL, 466625000ULL },
 	{ 3200000000ULL, 400000000ULL },
+	{ 3199500000ULL, 266625000ULL },
 	{ 3732000000ULL, 233250000ULL },
 };
 
