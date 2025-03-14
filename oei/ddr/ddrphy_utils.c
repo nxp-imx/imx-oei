@@ -106,43 +106,19 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
     switch (drate)
     {
     case 6400:
-        Dram_PLL_Init(MHZ(800));
-        Dram_Disable_Bypass();
-        break;
     case 4800:
-        Dram_PLL_Init(MHZ(600));
-        Dram_Disable_Bypass();
-        break;
     case 4266: /* Assume 4266 */
-        Dram_PLL_Init(533250000);
-        Dram_Disable_Bypass();
-        break;
     case 4000:
-        Dram_PLL_Init(MHZ(500));
-        Dram_Disable_Bypass();
-        break;
     case 3733: /* Assume 3733 */
-        Dram_PLL_Init(466625000);
-        Dram_Disable_Bypass();
-        break;
     case 3200:
-        Dram_PLL_Init(400000000);
-        Dram_Disable_Bypass();
-        break;
     case 2133:
-        Dram_PLL_Init(266625000);
-        Dram_Disable_Bypass();
-        break;
     case 1866: /* Assume 1866 */
-        Dram_PLL_Init(233250000);
-        Dram_Disable_Bypass();
-        break;
     case 1600:
-        Dram_PLL_Init(200000000);
+        Dram_PLL_Init(MHZ(drate) >> 3); /** drate/8 */
         Dram_Disable_Bypass();
         break;
     default:
-        printf("Clk rate not found\n");
+        printf("Clk rate %u not found\n", drate);
         return;
     }
 }
