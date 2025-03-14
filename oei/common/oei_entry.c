@@ -22,7 +22,7 @@ uint32_t __attribute__((section(".entry"))) oei_entry(void)
 #endif
 {
 	int ret = 0;
-	uint32_t msp, msplim;
+	static uint32_t msp, msplim;
 
 	memset(__START_BSS, 0, (uint32_t)__END_BSS - (uint32_t)__START_BSS);
 	memset(__StackLimit, 0, (uint32_t)__StackTop - (uint32_t)__StackLimit);
