@@ -103,6 +103,10 @@ int Wait_Ddr_Phy_Training_Complete(void)
 
 void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
 {
+    uint64_t rate = (uint64_t)drate;
+
+    rate *= 125000ULL; /** multiply to 1000000 (in MHz) and divide by 8 */
+
     switch (drate)
     {
     case 6400:
@@ -114,7 +118,7 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
     case 2133:
     case 1866: /* Assume 1866 */
     case 1600:
-        Dram_PLL_Init(MHZ(drate) >> 3); /** drate/8 */
+        Dram_PLL_Init(rate); /** drate/8 */
         Dram_Disable_Bypass();
         break;
     default:
