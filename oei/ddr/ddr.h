@@ -184,12 +184,8 @@ enum ddrfw_type
 
 typedef struct
 {
-#if defined(CONFIG_ELE)
 #define MAC_LENGTH             8 /** 256 bits, 32-bit aligned */
-    uint32_t mac[MAC_LENGTH];
-#else
-    uint32_t crc;
-#endif
+    uint32_t mac[MAC_LENGTH];    /** For 95A0/1 keep CRC32 value in mac[0] */
     uint8_t TrainedVREFCA_A0;
     uint8_t TrainedVREFCA_A1;
     uint8_t TrainedVREFCA_B0;
