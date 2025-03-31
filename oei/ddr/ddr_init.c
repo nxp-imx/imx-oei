@@ -172,7 +172,7 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
     fsp_id = dtiming->fsp_msg_num - 1;
     drate = dtiming->fsp_msg[fsp_id].drate;
     /* default to the last frequency point clock */
-    Ddr_Phy_Init_Set_Dfi_Clk(drate);
+    Ddr_Phy_Init_Set_Dfi_Clk(drate, dtiming->fsp_msg[fsp_id].ssc);
 
 #if (!defined(DDR_NO_PHY))
     /** Verify training data loaded from non-volatile memory */

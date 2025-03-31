@@ -80,7 +80,7 @@ int Ddr_Cfg_Phy(struct dram_timing_info *dtiming)
         if (!dtiming->skip_fw)
         {
             /* set dram PHY input clocks to desired frequency */
-            Ddr_Phy_Init_Set_Dfi_Clk(fsp_msg->drate);
+            Ddr_Phy_Init_Set_Dfi_Clk(fsp_msg->drate, fsp_msg->ssc);
 
             /* load the dram training firmware image */
             phy_ops.ddr_pre_load_firmware(fsp_msg, DMEM, DDRFW_TRAINING);

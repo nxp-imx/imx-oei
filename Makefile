@@ -54,11 +54,6 @@ ifeq ($(DEBUG),1)
     FLAGS += -DDEBUG
 endif
 
-ENABLE_SSC ?= 0
-ifeq ($(ENABLE_SSC),1)
-    FLAGS += -DENABLE_SSC
-endif
-
 # Configure board
 ifdef board
     SOM := $(board)

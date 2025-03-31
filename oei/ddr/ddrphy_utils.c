@@ -101,7 +101,7 @@ int Wait_Ddr_Phy_Training_Complete(void)
     }
 }
 
-void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
+void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate, bool ssc)
 {
     uint64_t rate = (uint64_t)drate;
 
@@ -118,7 +118,7 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate)
     case 2133:
     case 1866: /* Assume 1866 */
     case 1600:
-        Dram_PLL_Init(rate); /** drate/8 */
+        Dram_PLL_Init(rate, ssc); /** drate/8 */
         Dram_Disable_Bypass();
         break;
     default:

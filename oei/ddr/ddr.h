@@ -89,6 +89,7 @@ struct dram_fsp_cfg
 struct dram_fsp_msg
 {
     unsigned int drate;
+    bool ssc;
     enum fw_type fw_type;
     /* pstate ddrphy config */
     struct ddrphy_cfg_param *fsp_phy_cfg;
@@ -143,7 +144,7 @@ int Ddr_Cfg_Phy(struct dram_timing_info *timing_info);
 
 /* utils function for ddr phy training */
 int Wait_Ddr_Phy_Training_Complete(void);
-void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate);
+void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate, bool ssc);
 void Ddr_Phy_Init_Read_Msg_Block(void);
 void Ddr_Phy_Cfg_Set(struct ddrphy_cfg_param *cfg, unsigned int num);
 void Ddr_Cfg_Save(struct dram_timing_info *dtiming);
