@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright 2022-2024 NXP
+ * Copyright 2022-2025 NXP
  */
 
 #include <stddef.h>
@@ -156,7 +156,7 @@ int Ddr_Cfg_Phy_Qb(struct dram_timing_info *dtiming, int fsp_id)
 	unsigned int ts, te;
 #endif
 
-	mb = (uint16_t *) QB_STATE_SAVE_ADDR;
+	mb = (uint16_t *) (QB_STATE_SAVE_ADDR - DDRPHY_QB_MSB_SIZE * sizeof(uint16_t));
 	fsp_msg = &dtiming->fsp_msg[fsp_id];
 	qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
 
