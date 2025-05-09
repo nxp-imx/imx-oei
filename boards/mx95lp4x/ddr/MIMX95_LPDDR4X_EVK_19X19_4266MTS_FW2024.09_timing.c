@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v3.7.0_0.1-00e92a69.
+ * Code generated with DDR Tool v3.7.0_0.2-4600df02.
  * DDR PHY FW2024.09
  * Chip revision: B0
  */
