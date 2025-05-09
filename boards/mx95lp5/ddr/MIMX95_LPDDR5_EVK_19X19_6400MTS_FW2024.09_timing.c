@@ -10714,6 +10714,7 @@ static struct dram_fsp_msg ddr_dram_fsp_msg[] = {
     {
         /* P0 6400mbps */
         .drate = 6400,
+        .ssc = false,
         .fsp_phy_cfg = ddr_phy_fsp0_cfg,
         .fsp_phy_cfg_num = ARRAY_SIZE(ddr_phy_fsp0_cfg),
         .fw_type = FW_1D_IMAGE,
