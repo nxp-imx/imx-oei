@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v3.6.0_2.2-9cf9a9ea.
+ * Code generated with DDR Tool v3.7.0_2.9-f3915471.
  * DDR PHY FW2024.09
+ * 
  */
 
 #include "ddr.h"
@@ -54,7 +55,7 @@ static struct ddrc_cfg_param ddr_dram_fsp0_ddrc_cfg[] = {
     {0x5e080104, 0x48440008U},
     {0x5e080108, 0xA7A6E334U},
     {0x5e08010C, 0x1030400BU},
-    {0x5e080124, 0x08220000U},
+    {0x5e080124, 0x08200000U},
     {0x5e080160, 0x00000100U},
     {0x5e08016C, 0x01100000U},
     {0x5e080170, 0x8A010409U},
@@ -62,9 +63,9 @@ static struct ddrc_cfg_param ddr_dram_fsp0_ddrc_cfg[] = {
     {0x5e080254, 0x00430028U},
     {0x5e080258, 0x020029A9U},
     {0x5e08025C, 0x30410200U},
-    {0x5e080300, 0x060C0605U},
+    {0x5e080300, 0x050C0505U},
     {0x5e080304, 0x00430A02U},
-    {0x5e080308, 0x06000411U},
+    {0x5e080308, 0x06000403U},
     {0x5e08030C, 0x001E0010U},
     {0x5e080310, 0x20510000U},
     {0x5e080314, 0x09090307U},
@@ -6598,10 +6599,10 @@ static struct ddrphy_cfg_param ddr_phy_pie_fsp0_cfg[] = {
     {0x11057, 0x0},
     {0x12057, 0x0},
     {0x13057, 0x0},
-    {0x1000f, 0xa86},
-    {0x1100f, 0xa86},
-    {0x1200f, 0xa86},
-    {0x1300f, 0xa86},
+    {0x1000f, 0xa87},
+    {0x1100f, 0xa87},
+    {0x1200f, 0xa87},
+    {0x1300f, 0xa87},
     {0x90803, 0x4},
     {0x90804, 0x82},
     {0x90805, 0x1},
@@ -10704,10 +10705,6 @@ static struct ddrphy_cfg_param ddr_phy_pie[] = {
     {0x20311, 0x1},
     {0xc0080, 0x2},
     {0xd0003, 0x0},
-    {0x1000f, 0xa87},
-    {0x1100f, 0xa87},
-    {0x1200f, 0xa87},
-    {0x1300f, 0xa87},
 };
 
 static struct dram_fsp_msg ddr_dram_fsp_msg[] = {
