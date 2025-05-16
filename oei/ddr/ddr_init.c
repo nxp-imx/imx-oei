@@ -244,5 +244,7 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
     DDRC->DDR_SDRAM_CFG_3 |= DDRC_DDR_SDRAM_CFG_3_SR_FAST_WK_EN_MASK;
 #endif
 
+    Ddr_Post_Init();
+
     return ret;
 }

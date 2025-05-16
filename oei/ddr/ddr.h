@@ -284,4 +284,9 @@ bool Ddr_Training_Data_Release(uint32_t img_id);
  */
 void Ddr_Training_Data_Invalidate(void);
 
+/**
+ * Call implements the SoC specific DDR post init sequence
+ */
+void Ddr_Post_Init(void);
+
 #endif

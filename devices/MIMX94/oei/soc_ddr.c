@@ -91,6 +91,16 @@ uint32_t Get_Training_Data_Offset(uint32_t *offset)
     return ret;
 }
 
+void Ddr_Post_Init(void)
+{
+    /**
+     * RT_PULSE_EN = 1 requires AR_RT_URGENT_EN be set in DDRC_URGENT_EN
+     * so real time masters will be able to send urgent signal to ar_rt_urgent.
+     */
+    BLK_CTRL_DDRMIX->DDRC_URGENT_EN |=
+        BLK_CTRL_DDRMIX_DDRC_URGENT_EN_AR_RT_URGENT_EN(1);
+}
+
 #if defined(CONFIG_ELE)
 bool Ddr_Training_Data_Sign(void)
 {

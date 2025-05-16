@@ -91,6 +91,10 @@ uint32_t Get_Training_Data_Offset(uint32_t *offset)
     return ret;
 }
 
+void Ddr_Post_Init(void)
+{
+}
+
 #if defined(CONFIG_ELE)
 bool Ddr_Training_Data_Sign(void)
 {
