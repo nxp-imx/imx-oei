@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v3.7.0_2.9-f3915471.
+ * Code generated with DDR Tool v3.7.0_3-4e54a3a6.
  * DDR PHY FW2024.09
  * 
  */
@@ -21,14 +21,16 @@ static struct ddrc_cfg_param ddr_ddrc_cfg[] = {
     {0x5e080024, 0x80003ffU},
     {0x5e080028, 0x80000000U},
     {0x5e08002c, 0x7ffU},
-    {0x5e080080, 0x80000422U},
-    {0x5e080084, 0x80000422U},
+    {0x5e080080, 0x80800422U},
+    {0x5e080084, 0x80800422U},
     {0x5e080114, 0x1000U},
-    {0x5e080260, 0xa1U},
+    {0x5e080260, 0x800a1U},
     {0x5e080268, 0x0U},
     {0x5e08026c, 0x3004U},
-    {0x5e080800, 0x43933d80U},
-    {0x5e080804, 0x3f1f1f1fU},
+    {0x5e080278, 0x10U},
+    {0x5e080800, 0x43d3bd80U},
+    {0x5e080804, 0x1f1f1f1fU},
+    {0x5e080810, 0x14084060U},
     {0x5e080c00, 0x40000000U},
     {0x5e081000, 0xc00000e3U},
     {0x5e080d00, 0x81000200U},
