@@ -159,8 +159,8 @@ bool Ddr_Training_Data_Sign(void)
        uint32_t size;
 
        qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
-       size = sizeof(ddrphy_qb_state) - sizeof(uint32_t);
-       qb_state->crc = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
+       size = sizeof(ddrphy_qb_state) - MAC_LENGTH * sizeof(uint32_t);
+       qb_state->mac[0] = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
 
        return true;
 }
@@ -172,10 +172,10 @@ bool Ddr_Training_Data_Check(void)
 
     qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
 
-    size = sizeof(ddrphy_qb_state) - sizeof(uint32_t);
+    size = sizeof(ddrphy_qb_state) - MAC_LENGTH * sizeof(uint32_t);
     crc = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
 
-    return (crc == qb_state->crc);
+    return (crc == qb_state->mac[0]);
 }
 
 bool Ddr_Training_Data_Release(uint32_t img_id)
@@ -188,6 +188,6 @@ void Ddr_Training_Data_Invalidate(void)
     ddrphy_qb_state *qb_state;
 
     qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
-    qb_state->crc = 0U;
+    qb_state->mac[0] = 0U;
 }
 #endif
