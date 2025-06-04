@@ -158,6 +158,7 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
     uint32_t fsp_id, drate;
 #if (!defined(DDR_NO_PHY))
     uint32_t acg;
+    bool valid;
 #endif
 
     /* reset ddrphy */
@@ -175,12 +176,13 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
     Ddr_Phy_Init_Set_Dfi_Clk(drate, dtiming->fsp_msg[fsp_id].ssc);
 
 #if (!defined(DDR_NO_PHY))
-    /** Verify training data loaded from non-volatile memory */
-    if (Ddr_Training_Data_Check())
-    {
-        /** Release in read-write mode the memory used to load training data */
-        Ddr_Training_Data_Release(img_id);
+    valid = Ddr_Training_Data_Check();
+    /** Release in read-write mode the memory used to load training data */
+    Ddr_Training_Data_Release(img_id);
 
+    /** Verify training data loaded from non-volatile memory */
+    if (valid)
+    {
         /* Configure PHY in QuickBoot mode */
         ret = Ddr_Cfg_Phy_Qb(dtiming, fsp_id);
         if (ret) { return ret; }
