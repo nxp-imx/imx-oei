@@ -260,7 +260,7 @@ uint32_t Get_Training_Data_Offset(uint32_t *offset);
  *
  * @return    true if training data sign succeeded, false otherwise
  */
-bool Ddr_Training_Data_Sign(void);
+bool Ddr_Training_Data_Sign(uint32_t img_id);
 
 /**
  * Checks if loaded training data is valid and can be used
@@ -268,16 +268,7 @@ bool Ddr_Training_Data_Sign(void);
  *
  * @return    true if training data is valid, false otherwise
  */
-bool Ddr_Training_Data_Check(void);
-
-/**
- * Training data sing/verify mechanism may lock in read-only
- * mode the memory used to load training data. This function
- * releases the memory in read-write mode.
- *
- * @return	true if training data is valid, false otherwise
- */
-bool Ddr_Training_Data_Release(uint32_t img_id);
+bool Ddr_Training_Data_Check(uint32_t img_id);
 
 /**
  * Invalidate valid training data once quick boot flow completed
