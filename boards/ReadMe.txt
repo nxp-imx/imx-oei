@@ -8,4 +8,5 @@
 | mx95lp4x-15 | XIMX95LP4XCPU-15     | IMX95LP4XBB-15   |
 | mx943lp5-19 | XIMX943LP5CPU-19     | IMX943BB         |
 | mx943lp4-19 | XIMX943LP4CPU-19     | IMX943BB         |
+| mx943lp4-15 | XIMX943LP4CPU-15     | IMX943BB         |
 ---------------------------------------------------------

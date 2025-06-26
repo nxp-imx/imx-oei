@@ -1,0 +1,4 @@
+DDR_CONFIG ?= MIMX943_LPDDR4_EVK_15x15_3733MTS_FW2024.09_timing
+OBJS  += $(OUT)/$(DDR_CONFIG).o
+
+VPATH += boards/$(SOM)/ddr
