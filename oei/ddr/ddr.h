@@ -295,6 +295,11 @@ bool Ddr_Training_Data_Check(uint32_t img_id);
 void Ddr_Training_Data_Invalidate(void);
 
 /**
+ * Call implements the SoC specific DDR pre init sequence
+ */
+void Ddr_Pre_Init(void);
+
+/**
  * Call implements the SoC specific DDR post init sequence
  */
 void Ddr_Post_Init(void);

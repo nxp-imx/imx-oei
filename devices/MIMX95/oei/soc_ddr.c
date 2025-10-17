@@ -91,6 +91,10 @@ uint32_t Get_Training_Data_Offset(uint32_t *offset)
     return ret;
 }
 
+void Ddr_Pre_Init(void)
+{
+}
+
 void Ddr_Post_Init(void)
 {
 }
