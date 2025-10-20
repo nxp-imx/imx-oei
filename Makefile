@@ -66,7 +66,7 @@ ifdef r
     R := $(r)
 endif
 # Default to A0
-R ?= A0
+R ?= B0
 LOWER_R := $(shell echo $(R) | tr A-Z a-z)
 UPPER_R := $(shell echo $(R) | tr a-z A-Z)
 REV = $(UPPER_R)
@@ -156,7 +156,7 @@ help :
 	@/bin/echo -e "\tboard=mx95lp5/mx95lp4x/mx95lp4x-15/mx95libra  : the board,            default: mx95libra"
 	@/bin/echo -e "\tboard=mx943lp5-19/mx943lp4-19       : the board,            "
 	@/bin/echo -e "\toei=ddr/tcm                         : OEI type,             default: ddr"
-	@/bin/echo -e "\tr=A0/B0                             : SOC revision,         default: A0"
+	@/bin/echo -e "\tr=A0/B0                             : SOC revision,         default: B0"
 	@/bin/echo -e "\tDEBUG=1 or d=1                      : enable debug output,  default: off"
 	@/bin/echo -e "\tt=1                                 : enable OEI self-test, default: off"
 	@/bin/echo -e "\tv=1                                 : verbose compile logs, default: off"
