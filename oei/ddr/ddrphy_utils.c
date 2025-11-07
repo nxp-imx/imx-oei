@@ -110,9 +110,11 @@ void Ddr_Phy_Init_Set_Dfi_Clk(unsigned int drate, bool ssc)
     switch (drate)
     {
     case 6400: /* pll @ 800000000 */
+    case 6000: /* pll @ 750000000 */
     case 5600: /* pll @ 700000000 */
     case 4800: /* pll @ 600000000 */
     case 4266: /* pll @ 533250000 */
+    case 4200: /* pll @ 525000000 */
     case 4000: /* pll @ 500000000 */
     case 3733: /* pll @ 466625000 */
     case 3200: /* pll @ 400000000 */
