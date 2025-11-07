@@ -1,0 +1,246 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/*
+ * Copyright 2024 NXP
+ */
+#if defined(CONFIG_ELE)
+#include "fsl_ele.h"
+#else
+#include "crc.h"
+#endif
+#include "oei.h"
+#include "soc_ddr.h"
+#include "soc_rom.h"
+
+static uint32_t get_dev_offset(uint32_t *offset)
+{
+    struct container_hdr *phdr = (struct container_hdr *)QB_STATE_LOAD_ADDR;
+    struct boot_img_t *img_entry;
+    uint32_t ctn_off, img_end, readsize;
+    uint8_t i, num_images;
+    int ret;
+
+    ret = Rom_Api_Query_Boot_Info(QUERY_IMG_OFF, &ctn_off);
+    if (ret != ROM_API_OKAY) { return ret; }
+
+    /** third container offset */
+    ctn_off += 2U * CONTAINER_HDR_ALIGNMENT;
+    readsize = Rom_Api_Read(ctn_off, CONTAINER_HDR_ALIGNMENT, phdr);
+    if (readsize != CONTAINER_HDR_ALIGNMENT)
+    {
+        return ROM_API_ERR_INV_PAR;
+    }
+
+    if (phdr->tag != 0x87U || phdr->version != 0x00U)
+    {
+        return ROM_API_ERR_INV_PAR;
+    }
+
+    num_images = phdr->num_images;
+    img_entry = (struct boot_img_t *)(++phdr);
+
+    for (i = 0U; i < num_images; i++)
+    {
+        img_end = img_entry->offset + img_entry->size;
+        if (i + 1U < num_images)
+        {
+            img_entry++;
+            if (img_end + QB_STATE_STORAGE_SIZE == img_entry->offset)
+            {
+                /** hole detected */
+                (*offset) = ctn_off + img_end;
+                return ROM_API_OKAY;
+            }
+        }
+    }
+
+    return ROM_API_ERR_INV_PAR;
+}
+
+uint32_t Get_Training_Data_Offset(uint32_t *offset)
+{
+    uint32_t boot;
+    enum boot_dev_type boot_type;
+    uint32_t ret = ROM_API_OKAY;
+
+    Rom_Api_Set_Ready();
+    ret |= Rom_Api_Query_Boot_Info(QUERY_BT_DEV, &boot);
+    if (ret != ROM_API_OKAY) { return ret; }
+
+    boot_type = boot >> 16U;
+    switch (boot_type)
+    {
+        case BT_DEV_TYPE_MMC:
+            if (boot & 1U)
+            {
+                (*offset) = 0U;
+                break;
+            }
+            [[fallthrough]];
+        case BT_DEV_TYPE_SD:
+        case BT_DEV_TYPE_FLEXSPINOR:
+            ret = get_dev_offset(offset);
+            break;
+        case BT_DEV_TYPE_NAND:
+        case BT_DEV_TYPE_SPI_NOR:
+        case BT_DEV_TYPE_FLEXSPINAND:
+        case BT_DEV_TYPE_USB:
+        default:
+            (*offset) = 0U;
+            break;
+    }
+
+    return ret;
+}
+
+void Ddr_Pre_Init(void)
+{
+    /**
+     * Make NPU SRAM available regardless Zen-V core state.
+     *
+     * Neutron RESETCTRL, MEMENA(F), OCMCNT(1)
+     */
+    Write32(0x5ab00000, 0xf02);
+}
+
+void Ddr_Post_Init(void)
+{
+}
+
+#if defined(CONFIG_ELE)
+bool Ddr_Training_Data_Sign(uint32_t img_id)
+{
+    ele_info_t info;
+    ddrphy_qb_state *qb_state;
+    uint32_t size;
+    int ret;
+
+    ret = ELE_GetInfo(&info);
+    if (ret != ELE_SUCCESS_IND)
+    {
+        return false;
+    }
+
+    /**
+     * Local keys may not be available in some lifecycles
+     * Avoid signing training data for lifecycles below
+     */
+    switch (info.lifecycle)
+    {
+        case ELE_BLANK_LC:
+        case ELE_FAB_DEFAULT_LC:
+        case ELE_FAB_LC:
+        case ELE_NXP_PROVISIONED_LC:
+        case ELE_OEM_FIELD_RETURN_LC:
+        case ELE_NXP_FIELD_RETURN_LC:
+            return false;
+        default:
+            break;
+    }
+
+    qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
+    size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
+
+    ret = ELE_SignData(&qb_state->TrainedVREFCA_A0, size, &qb_state->mac, 0U);
+
+    if (ret == ELE_SUCCESS_IND)
+    {
+        /**
+         * Release in read-write mode the memory used to load
+         * training data if signing training data succeeds
+         */
+        ELE_ReleaseImageRam(img_id, 0U);
+    }
+
+    return (ret == ELE_SUCCESS_IND);
+}
+
+bool Ddr_Training_Data_Check_Init(void)
+{
+    ddrphy_qb_state *qb_state;
+    uint32_t i, sum, size;
+
+    qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
+    size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
+
+    /**
+     * Check if signature is empty
+     */
+    for (sum = 0, i = 0; i < MAC_LENGTH; i++)
+    {
+        sum |= qb_state->mac[i];
+    }
+
+    /**
+     * For empty signature there is no need to send ELE request to check it
+     */
+    if (sum == 0)
+    {
+        return false;
+    }
+
+    ELE_VerifyData_Tx(&qb_state->TrainedVREFCA_A0, size, &qb_state->mac);
+
+    return true;
+}
+
+bool Ddr_Training_Data_Check(uint32_t img_id)
+{
+    int ret;
+
+    ret = ELE_VerifyData_Rx(0U);
+
+    /**
+     * Release in read-write mode the memory used to load training
+     * data regardless of training data is valid or not
+     */
+    ELE_ReleaseImageRam(img_id, 0U);
+
+    return (ret == ELE_SUCCESS_IND);
+}
+
+void Ddr_Training_Data_Invalidate(void)
+{
+    ddrphy_qb_state *qb_state;
+
+    qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
+    qb_state->mac[0U] = 0U;
+}
+#else
+bool Ddr_Training_Data_Sign(uint32_t img_id)
+{
+       ddrphy_qb_state *qb_state;
+       uint32_t size;
+
+       qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
+       size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
+       qb_state->mac[0] = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
+
+       return true;
+}
+
+bool Ddr_Training_Data_Check_Init(void)
+{
+    return true;
+}
+
+bool Ddr_Training_Data_Check(uint32_t img_id)
+{
+    ddrphy_qb_state *qb_state;
+    uint32_t size, crc;
+
+    qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
+
+    size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
+    crc = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
+
+    return (crc == qb_state->mac[0]);
+}
+
+void Ddr_Training_Data_Invalidate(void)
+{
+    ddrphy_qb_state *qb_state;
+
+    qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
+    qb_state->mac[0] = 0U;
+}
+#endif
