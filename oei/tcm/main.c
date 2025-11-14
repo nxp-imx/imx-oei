@@ -22,10 +22,8 @@ int oei_main(uint32_t argc, uint32_t *argv)
 		timer_enable();
 
 	Clock_Init();
-#ifdef DEBUG
 	BOARD_InitPins();
 	BOARD_InitDebugConsole();
-#endif
 
 	printf("\n\nTCM OEI: start\n");
 #ifdef DEBUG
