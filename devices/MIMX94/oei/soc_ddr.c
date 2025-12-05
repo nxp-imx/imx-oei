@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright 2024 NXP
+ * Copyright 2024-2025 NXP
  */
 #if defined(CONFIG_ELE)
 #include "fsl_ele.h"
@@ -133,7 +133,7 @@ bool Ddr_Training_Data_Sign(uint32_t img_id)
     }
 
     qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
-    size = sizeof(ddrphy_qb_state) - MAC_LENGTH * sizeof(uint32_t);
+    size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
 
     ret = ELE_SignData(&qb_state->TrainedVREFCA_A0, size, &qb_state->mac, 0U);
 
@@ -155,7 +155,7 @@ bool Ddr_Training_Data_Check_Init(void)
     uint32_t i, sum, size;
 
     qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
-    size = sizeof(ddrphy_qb_state) - MAC_LENGTH * sizeof(uint32_t);
+    size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
 
     /**
      * Check if signature is empty
@@ -207,7 +207,7 @@ bool Ddr_Training_Data_Sign(uint32_t img_id)
        uint32_t size;
 
        qb_state = (ddrphy_qb_state *)(QB_STATE_SAVE_ADDR);
-       size = sizeof(ddrphy_qb_state) - MAC_LENGTH * sizeof(uint32_t);
+       size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
        qb_state->mac[0] = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
 
        return true;
@@ -225,7 +225,7 @@ bool Ddr_Training_Data_Check(uint32_t img_id)
 
     qb_state = (ddrphy_qb_state *)(QB_STATE_LOAD_ADDR);
 
-    size = sizeof(ddrphy_qb_state) - MAC_LENGTH * sizeof(uint32_t);
+    size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc) - sizeof(qb_state->mac);
     crc = CRC_Crc32(&qb_state->TrainedVREFCA_A0, size);
 
     return (crc == qb_state->mac[0]);

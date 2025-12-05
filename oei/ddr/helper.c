@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright 2018, 2023-2024 NXP
+ * Copyright 2018, 2023-2025 NXP
  */
 #include <errno.h>
 #include <stddef.h>
@@ -221,6 +221,26 @@ static void Edma_Acsm_Sram_Restore(ddrphy_qb_state *qb_state)
     ret = edma_ops.configure(EDMA2_BASE_ADDR, EDMA_CH0, (unsigned int)&(qb_state->acsm[0]) , 2,
               DDR_PHY_BASE + Ddrphy_AddrRemap(ACSM_SRAM_BASE_ADDR), 4,
               DDRPHY_QB_ACSM_ARRAY_SIZE * sizeof(uint16_t), 1);
+    if (ret != 0)
+    {
+        printf("Failed to set edma - error %d\n", ret);
+        edma_ops.clr_tcd(EDMA2_BASE_ADDR, EDMA_CH0);
+    }
+    edma_ops.start_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
+    edma_ops.check_edma(EDMA2_BASE_ADDR, EDMA_CH0);
+    edma_ops.wait_transfer(EDMA2_BASE_ADDR, EDMA_CH0);
+}
+
+void Edma_Copy_Data(uint32_t src_addr, uint32_t src_tbytes,
+                    uint32_t dst_addr, uint32_t dst_tbytes, uint32_t size)
+{
+    int ret;
+
+    edma_ops.set_tbytes(EDMA2_BASE_ADDR, EDMA_CH0, src_tbytes, dst_tbytes);
+    ret = edma_ops.configure(EDMA2_BASE_ADDR, EDMA_CH0,
+                             src_addr, src_tbytes,
+                             dst_addr, dst_tbytes,
+                             size, 1);
     if (ret != 0)
     {
         printf("Failed to set edma - error %d\n", ret);

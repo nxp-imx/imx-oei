@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright 2022-2024 NXP
+ * Copyright 2022-2025 NXP
  */
 #include <stddef.h>
 #include <stdint.h>
 #include <errno.h>
+#include "crc.h"
+#include "common.h"
+#include "fsl_common.h"
 #include "oei.h"
 #include "soc_ddr.h"
 
@@ -172,6 +175,7 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
     int ret = 0;
     uint32_t fsp_id, drate;
 #if (!defined(DDR_NO_PHY))
+    int qb_ret = 0;
     uint32_t acg;
 #endif
 
@@ -195,13 +199,13 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
 
 #if (!defined(DDR_NO_PHY))
     /** Try to configure PHY in QuickBoot mode */
-    ret = Ddr_Cfg_Phy_Qb(dtiming, fsp_id, img_id);
-    if (ret < 0)
+    qb_ret = Ddr_Cfg_Phy_Qb(dtiming, fsp_id, img_id);
+    if (qb_ret < 0)
     {
         /** QuckBoot flow failure, return error */
-        return ret;
+        return qb_ret;
     }
-    else if (ret > 0)
+    else if (qb_ret > 0)
     {
         /** QuickBoot flow signals inappropriate flow context, run Training flow */
 
@@ -217,6 +221,8 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
         uint32_t dbytes;
         uint16_t init = 0;
         uint32_t addr = 0;
+        ddrphy_qb_state *qb_state;
+        uint32_t size;
 
         /** Reset DDR PHY */
         Ddr_PhyColdReset();
@@ -295,6 +301,16 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
 
         /** Sign collected training data */
         Ddr_Training_Data_Sign(img_id);
+
+        /**
+         * Compute CRC32 over Training Data + Signature to
+         * be able to check the integrity of the data in
+         * the bootloader, before saving to NVM.
+         */
+        qb_state = (ddrphy_qb_state *)QB_STATE_SAVE_ADDR;
+
+        size = sizeof(ddrphy_qb_state) - sizeof(qb_state->crc);
+        qb_state->crc = CRC_Crc32((uint8_t *)qb_state->mac, size);
     }
 #endif
 
@@ -318,6 +334,26 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
     while (DDRC->DDR_MTCR & DDRC_DDR_MTCR_MT_EN_MASK);
 
 #if (!defined(DDR_NO_PHY))
+
+    if (qb_ret > 0)
+    {
+        uint8_t max_tsize = 128; /* bytes */
+        uint64_t size;
+
+        /** Round size to a multiple of 128, so
+          * the maximum eDMA transfer size (128 bytes)
+          * can be used.
+          */
+        size = ALIGN(sizeof(ddrphy_qb_state), max_tsize);
+        size = MIN(size, QB_STATE_STORAGE_SIZE);
+
+        /** Copy qb data from NPU SRAM to DRAM,
+          * for bootloader to save to NVM.
+          */
+        Edma_Copy_Data(QB_STATE_SAVE_ADDR, max_tsize,
+                       QB_STATE_DDR_ADDR,  max_tsize, size);
+    }
+
     /* Indicate that the RxReplica pathPhase initialization was performed
        in the OEI by writing a special code key to DDRC DDR_MTP0 (register
        not used during normal operations).
