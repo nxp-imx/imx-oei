@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright 2023-2024 NXP
+ * Copyright 2023-2025 NXP
  */
 #include "edma.h"
 #include "soc_edma.h"
@@ -127,6 +127,7 @@ static int set_dma(uint32_t dma_base_addr, uint8_t ch, uint32_t src_addr, uint32
 {
 	int ret = 0;
 	DMA_Type *DMA = (DMA_Type *)(dma_base_addr);
+	uint8_t ssize, dsize;
 
 	/* Check address alignment  */
 	if ((src_addr % src_width) != 0)
@@ -134,6 +135,13 @@ static int set_dma(uint32_t dma_base_addr, uint8_t ch, uint32_t src_addr, uint32
 
 	if ((dst_addr % dst_width) != 0)
 	        return EDMA_DST_ERR;
+
+	/* Check size is a multiple of src/dst transfer size */
+	ssize = 1 << ((DMA->TCD[ch].ATTR >> DMA_ATTR_SSIZE_SHIFT) & 0x7);
+	dsize = 1 << ((DMA->TCD[ch].ATTR >> DMA_ATTR_DSIZE_SHIFT) & 0x7);
+
+	if (((size % ssize) != 0) || ((size % dsize) != 0))
+	        return EDMA_WIDTH_ERR;
 
 	/* Configure DMA */
 	DMA->TCD[ch].SADDR = Convert_To_Dma_Addr(src_addr & ~(CM33_28TH_BIT_MASK));

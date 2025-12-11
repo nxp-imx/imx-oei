@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright 2023-2024 NXP
+ * Copyright 2023-2025 NXP
  */
 
 #ifndef __EDMA_H
@@ -19,6 +19,7 @@
 /* errors in case edma src/dst address misalignment */
 #define EDMA_SRC_ERR -1
 #define EDMA_DST_ERR -2
+#define EDMA_WIDTH_ERR -3
 
 #define DMA_MIDR_SET_MASK                        BIT(7)
 #define DMA_CH_WO_TMC_MODE                       BIT(15)
