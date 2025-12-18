@@ -46,8 +46,10 @@ LFLAGS += -flto
 FLAGS  += -flto
 endif
 
+include $(ROOT_DIR)/oei/makefiles/common.mak
+
 # Configure toolchain
-OEI_CROSS_COMPILE ?= $(TOOLS)/arm-gnu-toolchain-*-none-eabi/bin/arm-none-eabi-
+OEI_CROSS_COMPILE ?= $(TOOLS)/arm-gnu-toolchain-$(TC_VERSION)-x86_64-arm-none-eabi/bin/arm-none-eabi-
 ARCHFLAGS = -mcpu=cortex-$(cpu) -mthumb -mfloat-abi=soft
 
 cc = gcc
