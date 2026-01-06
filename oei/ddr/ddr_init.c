@@ -237,61 +237,70 @@ int Ddrc_Init(struct dram_timing_info *dtiming, uint32_t img_id)
         /* CSR bus: MCU/PIE/DMA++,TDR/APB-- */
         Dwc_Ddrphy_Apb_Wr(0xd0000, 0x0);
 
-        /* Detect how many bytes are used in the DDR interface.
-           Cannot retrieve this information from the DDRC since
-           it has not been configured yet. Instead, we can get
-           this information from the DDR PHY CSR AcLnDisable. This tells
-           us which CA bus signals are disabled for each channel. For
-           channel B, this CSR address is 0x310ac. If any of the CA bus signals
-           are disabled (denoted by setting it to "1"), then this implies this
-           channel is disabled indicating we are in 16-bit (2 byte) mode.
-           This CSR definition changes depending on LP4 or LP5 mode, but in
-           either mode, bit[0] indicates CA0.
-           Hence, for simplicity, we can just read bit[0] which is ChB_CA0 and
-           if it returns "1", it means ChB is disabled.
+        /* Initial training of baseline RxReplica receive delay line values
+         * used by RxReplcia SW method. If the HW PHY methof of RxReplica
+         * is used, then do not execute this. To check if the HW method is
+         * used, read RxClkCntl1[EnRxClkCor]: if set, then HW mthod is used.
          */
-        if (((uint16_t)Dwc_Ddrphy_Apb_Rd(0x310acU) & 0x1U) == 0x1U)
+        if (((uint16_t)Dwc_Ddrphy_Apb_Rd(0x10057U) & 0x1U) == 0x0U)
         {
-            dbytes = 2U;
-        }
-        else
-        {
-            dbytes = 4U;
-        }
-
-        /* Obtain the baseline RxReplica receive delay line values by
-           taking 128 samples and averaging it, per byte lane, then store
-           this in RxReplicaCtl03.
-         */
-        for (idx = 0U; idx < dbytes; idx++)
-        {
-            sumpathphase = 0U;
-            loop = count;
-
-            /* Get path select */
-            /* RxReplicaCtl01: Specify which of the five
-             * RxReplicaPathPhase[0..4]
-             * to use for computing RxReplicaRatioNow.
+            /* Detect how many bytes are used in the DDR interface.
+               Cannot retrieve this information from the DDRC since
+               it has not been configured yet. Instead, we can get
+               this information from the DDR PHY CSR AcLnDisable. This tells
+               us which CA bus signals are disabled for each channel. For
+               channel B, this CSR address is 0x310ac. If any of the CA bus
+               signals are disabled (denoted by setting it to "1"), then this
+               implies this channel is disabled indicating we are in 16-bit
+               (2 byte) mode.
+               This CSR definition changes depending on LP4 or LP5 mode, but
+               in either mode, bit[0] indicates CA0.
+               Hence, for simplicity, we can just read bit[0] which is ChB_CA0
+               and if it returns "1", it means ChB is disabled.
              */
-            addr = 0x100adU + (idx << 12U);
-            pathsel[idx] = (uint16_t)(Dwc_Ddrphy_Apb_Rd(addr));
-
-            /* Obtain 128 samples of the receive delay line (pathphase) from
-               the RxReplica circuit
-             */
-            while (loop-- != 0U)
+            if (((uint16_t)Dwc_Ddrphy_Apb_Rd(0x310acU) & 0x1U) == 0x1U)
             {
-                addr = 0x100d0U + (idx << 12U) + pathsel[idx];
-                sumpathphase += (uint16_t)Dwc_Ddrphy_Apb_Rd(addr);
+                dbytes = 2U;
+            }
+            else
+            {
+                dbytes = 4U;
             }
 
-            /* Got Pathphase init values*/
-            init = (uint16_t)(DDR_SimpleDivRound(sumpathphase, count));
-            /* Store the receive dealy line (pathphase) baseline to
-               RxReplicaCtl03
+            /* Obtain the baseline RxReplica receive delay line values by
+               taking 128 samples and averaging it, per byte lane, then store
+               this in RxReplicaCtl03.
              */
-            addr = 0x100afU + (idx << 12U);
-            Dwc_Ddrphy_Apb_Wr(addr, init);
+            for (idx = 0U; idx < dbytes; idx++)
+            {
+                sumpathphase = 0U;
+                loop = count;
+
+                /* Get path select */
+                /* RxReplicaCtl01: Specify which of the five
+                 * RxReplicaPathPhase[0..4]
+                 * to use for computing RxReplicaRatioNow.
+                 */
+                addr = 0x100adU + (idx << 12U);
+                pathsel[idx] = (uint16_t)(Dwc_Ddrphy_Apb_Rd(addr));
+
+                /* Obtain 128 samples of the receive delay line (pathphase)
+                   from the RxReplica circuit
+                 */
+                while (loop-- != 0U)
+                {
+                    addr = 0x100d0U + (idx << 12U) + pathsel[idx];
+                    sumpathphase += (uint16_t)Dwc_Ddrphy_Apb_Rd(addr);
+                }
+
+                /* Got Pathphase init values*/
+                init = (uint16_t)(DDR_SimpleDivRound(sumpathphase, count));
+                /* Store the receive dealy line (pathphase) baseline to
+                   RxReplicaCtl03
+                 */
+                addr = 0x100afU + (idx << 12U);
+                Dwc_Ddrphy_Apb_Wr(addr, init);
+            }
         }
 
         Dwc_Ddrphy_Apb_Wr(0xd0000U, 0x1U);
