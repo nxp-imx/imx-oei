@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 NXP
+ * Copyright 2023-2026 NXP
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -244,7 +244,7 @@ const uint8_t g_clockRootMux[CLOCK_NUM_ROOT][CLOCK_NUM_ROOT_MUX_SEL] =
 
     [CLOCK_ROOT_DRAMAPB][0] = CLOCK_SRC_OSC24M,
     [CLOCK_ROOT_DRAMAPB][1] = CLOCK_SRC_SYSPLL1_PFD0_DIV2,
-    [CLOCK_ROOT_DRAMAPB][2] = CLOCK_SRC_SYSPLL1_PFD1_DIV2,
+    [CLOCK_ROOT_DRAMAPB][2] = CLOCK_SRC_SYSPLL1_PFD1,
     [CLOCK_ROOT_DRAMAPB][3] = CLOCK_SRC_FRO,
 
     [CLOCK_ROOT_DISPAPB][0] = CLOCK_SRC_OSC24M,
