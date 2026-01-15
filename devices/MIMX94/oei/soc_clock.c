@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 NXP
+ * Copyright 2024-2026 NXP
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -19,7 +19,7 @@ struct clk_root_cfg {
 };
 
 static struct clk_root_cfg clk_root_cfgs[] = {
-	{ CLOCK_ROOT_DRAMAPB, CLOCK_SRC_SYSPLL1_PFD1_DIV2, 3 }, /* 400MHz / 3 = 133.(3) MHz */
+	{ CLOCK_ROOT_DRAMAPB, CLOCK_SRC_SYSPLL1_PFD1, 3 }, /* 800MHz / 3 = 266.67 MHz */
 #ifdef DEBUG
 #if (BOARD_DEBUG_UART_INSTANCE == 1)
 	{ CLOCK_ROOT_LPUART1, CLOCK_SRC_OSC24M, 1}, /* 24MHz */
@@ -111,9 +111,9 @@ void Dram_PLL_Init(uint64_t pll_val, bool ssc)
 
 void Dram_Disable_Bypass(void)
 {
-	/* Set DRAM APB to 133Mhz */
+	/* Set DRAM APB to 266.67 MHz */
 	(void) CCM_RootSetDiv(CLOCK_ROOT_DRAMAPB, 3U);
-	(void) CCM_RootSetParent(CLOCK_ROOT_DRAMAPB, CLOCK_SRC_SYSPLL1_PFD1_DIV2);
+	(void) CCM_RootSetParent(CLOCK_ROOT_DRAMAPB, CLOCK_SRC_SYSPLL1_PFD1);
 	(void) CCM_RootSetEnable(CLOCK_ROOT_DRAMAPB, 1);
 	/* Switch from DRAM  clock root from CCM to PLL */
 	(void) CCM_GprValSet(2, CCM_GPR_SHARED2_DRAM_PLL_BYPASS_MASK, 0);
