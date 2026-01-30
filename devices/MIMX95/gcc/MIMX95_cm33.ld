@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 /*
- * Copyright 2024-2025 NXP
+ * Copyright 2024-2026 NXP
  */
 
 /* Entry Point */
@@ -61,7 +61,7 @@ SECTIONS
 	s_code_end = .;
 
 	/* Uninitialized data section */
-	.bss (__StackLimit - SIZEOF(.bss)) :
+	.bss :
 	{
 		/* This is used by the startup in order to initialize the .bss section */
 		. = ALIGN(4);
