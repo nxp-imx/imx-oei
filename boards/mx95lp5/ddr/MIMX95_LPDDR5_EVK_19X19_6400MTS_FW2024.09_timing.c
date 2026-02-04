@@ -1,9 +1,9 @@
 /*
- * Copyright 2025 NXP
+ * Copyright 2025-2026 NXP
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v3.9.0_0.8-eff28b90a.
+ * Code generated with DDR Tool v4.0.0_1.2-ac07e4ce6.
  * DDR PHY FW2024.09-SP2
  * Chip revision: B0
  * Part number: NXP LPDDR5 EVK 19x19 board's default DDR part
@@ -64,7 +64,7 @@ static struct ddrc_cfg_param ddr_dram_fsp0_ddrc_cfg[] = {
     {0x5e080170, 0x8C010509U},
     {0x5e080250, 0x00110C11U},
     {0x5e080254, 0x00680040U},
-    {0x5e080258, 0x03003E80U},
+    {0x5e080258, 0x03000400U},
     {0x5e08025C, 0x40520200U},
     {0x5e080300, 0x08110809U},
     {0x5e080304, 0x00680F02U},
