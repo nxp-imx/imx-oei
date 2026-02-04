@@ -1,9 +1,9 @@
 /*
- * Copyright 2025 NXP
+ * Copyright 2025-2026 NXP
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v3.9.0_3.1-eff28b90a.
+ * Code generated with DDR Tool v4.0.0_3.6-c460ca712.
  * DDR PHY FW2024.09-SP2
  * 
  * Part number: NXP LPDDR4 EVK 15x15 board's default DDR part
