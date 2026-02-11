@@ -1,9 +1,9 @@
 /*
- * Copyright 2025 NXP
+ * Copyright 2025-2026 NXP
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Code generated with DDR Tool v4.0.0_0.2-f426b9d7a.
+ * Code generated with DDR Tool v4.0.0_0.4-288f058e5.
  * DDR PHY FW2024.09-SP2
  * 
  * Part number: NXP LPDDR5 EVK 15x15 board's default DDR part
@@ -28,7 +28,7 @@ static struct ddrc_cfg_param ddr_ddrc_cfg[] = {
     {0x5e080260, 0x800a1U},
     {0x5e080268, 0x0U},
     {0x5e08026c, 0x3d04U},
-    {0x5e080278, 0x10U},
+    {0x5e080278, 0x210U},
     {0x5e080800, 0x43d3bd80U},
     {0x5e080804, 0x1f1f1f1fU},
     {0x5e080810, 0x14084060U},
@@ -63,17 +63,17 @@ static struct ddrc_cfg_param ddr_dram_fsp0_ddrc_cfg[] = {
     {0x5e080104, 0x48440008U},
     {0x5e080108, 0xA7A8E435U},
     {0x5e08010C, 0x1030400BU},
-    {0x5e080124, 0x08200000U},
+    {0x5e080124, 0x08220100U},
     {0x5e080160, 0x00000100U},
     {0x5e08016C, 0x01100000U},
     {0x5e080170, 0x8B010409U},
     {0x5e080250, 0x0011080CU},
     {0x5e080254, 0x00430028U},
-    {0x5e080258, 0x020029A9U},
+    {0x5e080258, 0x02000100U},
     {0x5e08025C, 0x30410200U},
     {0x5e080300, 0x050C0506U},
     {0x5e080304, 0x00430A02U},
-    {0x5e080308, 0x06000403U},
+    {0x5e080308, 0x06000411U},
     {0x5e08030C, 0x001E0010U},
     {0x5e080310, 0x20510000U},
     {0x5e080314, 0x09090307U},
