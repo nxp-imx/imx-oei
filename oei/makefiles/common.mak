@@ -31,4 +31,4 @@
 ## ###################################################################
 
 # Toolchain Version
-export TC_VERSION ?= 14.2.rel1
+export TC_VERSION ?= 15.2.rel1
