@@ -4347,8 +4347,6 @@ typedef struct {
 /** Array initializer of DDRC peripheral base pointers */
 #define DDRC_BASE_PTRS                       { DDRC }
 
-#define DDRC_CTRL                            ((DDRC_Type *)DDRC_BASE)
-
 #define DDR_PHY_BASE                         (0x4E800000u)
 /*!
  * @}

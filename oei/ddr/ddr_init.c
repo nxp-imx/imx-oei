@@ -22,7 +22,7 @@ static uint32_t DDR_SimpleDivRound(uint32_t val, uint32_t denom);
 /*--------------------------------------------------------------------------*/
 static bool Check_DdrcIdle(uint32_t flag)
 {
-    while ((DDRC_CTRL->DDRDSR_2 & flag) != flag) {};
+    while ((DDRC->DDRDSR_2 & flag) != flag) {};
 
     /* Return status */
     return true;
@@ -35,8 +35,7 @@ static bool Check_Dfi_Init_Complete(void)
 {
     do
     {
-        if ((Read32(&DDRC_CTRL->DDRDSR_2) &
-                DDRC_DDRDSR_2_PHY_INIT_CMPLT_MASK) != 0U)
+        if ((DDRC->DDRDSR_2 & DDRC_DDRDSR_2_PHY_INIT_CMPLT_MASK) != 0U)
         {
             break;
         }
