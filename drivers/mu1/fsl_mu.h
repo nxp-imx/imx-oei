@@ -658,30 +658,6 @@ static inline void MU_ResetBothSides(MU_Type *base)
 }
 
 /*!
- * @brief Enables or disables the clock on the other core.
- *
- * This function enables or disables the platform clock on the other core when
- * that core enters a stop mode. If disabled, the platform clock for the other
- * core is disabled when it enters stop mode. If enabled, the platform clock
- * keeps running on the other core in stop mode, until this core also enters
- * stop mode.
- *
- * @param base MU peripheral base address.
- * @param enable   Enable or disable the clock on the other core.
- */
-static inline void MU_SetClockOnOtherCoreEnable(MU_Type *base, bool enable)
-{
-    if (enable)
-    {
-        base->CCR0 |= MU_CCR0_CLKE_MASK;
-    }
-    else
-    {
-        base->CCR0 &= ~MU_CCR0_CLKE_MASK;
-    }
-}
-
-/*!
  * @brief Hardware reset the other core.
  *
  * This function resets the other core, the other core could mask the
