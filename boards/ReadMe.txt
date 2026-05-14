@@ -15,4 +15,5 @@
 | mx952lp5-19  | IMX952LP5CPU-19      | IMX952BB         |
 | mx937lp4x-15 | IMX937LP4XCPU-15     | IMX952BB         |
 | mx937lp4x-19 | IMX937LP4XCPU-19     | IMX952BB         |
+| mx937lp5-15  | IMX937LP5CPU-15      | IMX952BB         |
 ----------------------------------------------------------
