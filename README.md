@@ -32,8 +32,18 @@ Set the TOOLS shell variable to the directory the toolchain is installed in. For
 
     export TOOLS=~/tools
 
-When the toolchain is in a directory like arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi in this
-*tools* directory.
+The expected toolchain location is defined in oei/makefiles/gcc_cross.mak:
+
+    OEI_CROSS_COMPILE ?= $(TOOLS)/arm-gnu-toolchain-$(TC_VERSION)-x86_64-arm-none-eabi/bin/arm-none-eabi-
+
+The default toolchain version is defined in oei/makefiles/common.mak:
+
+    export TC_VERSION ?= 15.2.rel1
+
+If you have a different version installed, please specify it either by redefining TC_VERSION in
+common.mk, or by setting TC_VERSION in build command:
+
+    make TC_VERSION=<installed version> ...
 
 Also ensure the Linux installation is up-to-date and then install:
 
