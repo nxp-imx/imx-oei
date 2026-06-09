@@ -3,14 +3,9 @@
  * Copyright 2025 NXP
  */
 #include <stdio.h>
+#include "board.h"
 #include "fsl_ele.h"
 #include "oei.h"
-
-#define M7_DDR_ADDR_START   0x80000000ULL
-#define M7_DDR_ADDR_END     0x89FFFFFFULL
-
-#define DDR_IEE_REG_START   M7_DDR_ADDR_START
-#define DDR_IEE_REG_END     M7_DDR_ADDR_END
 
 #define RNG_CHECK_CNT       1000U
 #define RNG_DELAY_US        5U
