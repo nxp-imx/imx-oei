@@ -2,30 +2,30 @@
   "SPDXID": "SPDXRef-DOCUMENT",
   "spdxVersion": "SPDX-2.3",
   "creationInfo": {
-    "created": "2026-06-02T06:47:57Z",
+    "created": "2026-08-25T03:36:21Z",
     "creators": [
       "Organization: NXP"
     ],
-    "licenseListVersion": "3.26"
+    "licenseListVersion": "3.28"
   },
-  "name": "imx-oei-lf-6.18.20-2.0.0",
+  "name": "imx-oei-lf-6.18.37-2.1.0",
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "https://nxp.com/spdx/3268390b-1968-49dc-864a-82967a5c8297",
+  "documentNamespace": "https://nxp.com/spdx/506e0d0b-2dfe-422a-b08f-8ec10fb653ca",
   "packages": [
     {
-      "SPDXID": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297",
+      "SPDXID": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca",
       "name": "imx-oei",
-      "versionInfo": "lf-6.18.20-2.0.0",
-      "licenseConcluded": "(BSD-3-Clause)",
-      "licenseDeclared": "(BSD-3-Clause)",
-      "downloadLocation": "https://github.com/nxp-imx/imx-oei -b lf-6.18.20-2.0.0",
+      "versionInfo": "lf-6.18.37-2.1.0",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "downloadLocation": "https://github.com/nxp-imx/imx-oei -b lf-6.18.37-2.1.0",
       "originator": "Organization: NXP",
       "supplier": "NOASSERTION",
       "externalRefs": [],
       "filesAnalyzed": false
     },
     {
-      "SPDXID": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297---814fd893-9f29-4f2d-8b8f-21179b70f8eb",
+      "SPDXID": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca---814fd893-9f29-4f2d-8b8f-21179b70f8eb",
       "name": "arm-trusted-firmware",
       "versionInfo": "v2.12",
       "licenseConcluded": "BSD-3-Clause",
@@ -64,7 +64,7 @@
       "filesAnalyzed": false
     },
     {
-      "SPDXID": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297---925e6340-449b-4c57-9ebd-558e6429b7db",
+      "SPDXID": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca---925e6340-449b-4c57-9ebd-558e6429b7db",
       "name": "CMSIS_5",
       "versionInfo": "5.4.0",
       "licenseConcluded": "Apache-2.0",
@@ -81,17 +81,17 @@
     {
       "spdxElementId": "SPDXRef-DOCUMENT",
       "relationshipType": "DESCRIBES",
-      "relatedSpdxElement": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297"
+      "relatedSpdxElement": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca"
     },
     {
-      "spdxElementId": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297",
+      "spdxElementId": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca",
       "relationshipType": "DYNAMIC_LINK",
-      "relatedSpdxElement": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297---814fd893-9f29-4f2d-8b8f-21179b70f8eb"
+      "relatedSpdxElement": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca---814fd893-9f29-4f2d-8b8f-21179b70f8eb"
     },
     {
-      "spdxElementId": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297",
+      "spdxElementId": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca",
       "relationshipType": "DYNAMIC_LINK",
-      "relatedSpdxElement": "SPDXRef-package-3268390b-1968-49dc-864a-82967a5c8297---925e6340-449b-4c57-9ebd-558e6429b7db"
+      "relatedSpdxElement": "SPDXRef-package-506e0d0b-2dfe-422a-b08f-8ec10fb653ca---925e6340-449b-4c57-9ebd-558e6429b7db"
     }
   ]
 }
